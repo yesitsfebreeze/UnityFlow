@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: SuperBulletProjectileSettings
   m_EditorClassIdentifier: 
   ColliderSizeMultiplier: 1.5
-  Speed: 20
-  Range: 20
-  Fx: {fileID: 0}
+  Speed: 65
+  Range: 23
+  Fx: {fileID: 1965343156803978, guid: aa8d6482d70a23445b4b2a928ed1b845, type: 3}

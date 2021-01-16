@@ -2,18 +2,19 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-class IngameUI : ReferencedMonoBehaviour
+public class IngameUI : ReferencedMonoBehaviour
 {
 
   public SO_UISettings settings;
   public Transform cooldownWrapper;
 
-  public void AddNadeCooldown(GameObject Nade, int slot, float cooldown)
+  public void AddNadeCooldown(GameObject Nade, int slot, float cooldown, string key)
   {
     GameObject UIELement = Instantiate(settings.Cooldown, Vector3.zero, Quaternion.identity) as GameObject;
     UIELement.transform.SetParent(cooldownWrapper);
     Cooldown UIScript = UIELement.GetComponent<Cooldown>() as Cooldown;
     UIScript.maxValue = cooldown;
+    UIScript.key = key;
     UIScript.slot = slot;
   }
 

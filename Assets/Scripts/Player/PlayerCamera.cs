@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerCamera : MonoBehaviour
+public class PlayerCamera : ReferencedMonoBehaviour
 {
 
   static float camAngleMin = 10;
@@ -32,11 +32,11 @@ public class PlayerCamera : MonoBehaviour
   public float camZoomLerpSpeed = 5f;
   [Range(0.05f, 1f)]
   public float cameraZoomStep = 0.1f;
-  [Range(5, 30)]
+  [Range(0, 30)]
   public float camOffsetMaxLeftRight = 27;
-  [Range(5, 30)]
+  [Range(0, 30)]
   public float camOffsetMaxFront = 11;
-  [Range(5, 30)]
+  [Range(0, 30)]
   public float camOffsetMaxBack = 16;
 
 
@@ -47,6 +47,12 @@ public class PlayerCamera : MonoBehaviour
   private Quaternion cameraRot;
   private float lastCamAngle;
   private float lastCamDistance;
+
+
+  public Quaternion GetCameraAngle()
+  {
+    return Quaternion.LookRotation(boomAnchor.transform.position - arm.transform.position);
+  }
 
   void OnEnable()
   {

@@ -2,14 +2,14 @@ import itertools
 
 
 
-liquids
-solids
-vapor
+# liquids
+# solids
+# vapor
 
 abilities = [
   "foam",
   "lubrication",
-  "coolant",
+  "coolant"
   ]
 
 duplets = 2

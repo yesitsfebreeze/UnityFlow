@@ -12,16 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2155e8e5b4e8654b9e0a3915ae00be8, type: 3}
   m_Name: LauncherSettings
   m_EditorClassIdentifier: 
-  RechargeTime: 1
+  RechargeTime: 0.2
   Slowdown: 0.2
+  KeyBinds:
+  - Q
+  - E
+  - F
   LaunchTimes:
-  - 0.3
+  - 0.4
   - 0.6
-  - 0.9
+  - 0.8
   Cooldowns:
-  - 2
   - 3
-  - 4
+  - 5.5
+  - 7
   Nades:
   - {fileID: 1305274590988741327, guid: eed94911f3e062c418c5360b072ba689, type: 3}
   - {fileID: 1627262965250928633, guid: 0e5f1c9895beccd40bb01e67fce7575d, type: 3}

@@ -80,6 +80,7 @@ GameObject:
   - component: {fileID: 8167537129110676285}
   - component: {fileID: 8917565953820802863}
   - component: {fileID: 8149124012118256435}
+  - component: {fileID: 5728201293186931655}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -310,6 +311,20 @@ MonoBehaviour:
   ammo: 3
   superAmmo: 0
   settings: {fileID: 11400000, guid: dffccbd11a06ba34aa0aebec1ca85330, type: 2}
+--- !u!114 &5728201293186931655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922121832596381372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6abe306c59dcac5478ffd423ef6982d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHealth: 100
+  CurrentHealth: 100
 --- !u!1 &922121832612181693
 GameObject:
   m_ObjectHideFlags: 0
@@ -355,7 +370,7 @@ GameObject:
   - component: {fileID: 3437572661045375628}
   m_Layer: 0
   m_Name: CameraBoomCamera
-  m_TagString: Player
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

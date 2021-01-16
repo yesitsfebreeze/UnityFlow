@@ -15,7 +15,7 @@ MonoBehaviour:
   MaxAmmo: 3
   RechargeTime: 0.7
   ShootTime: 0.2
-  ChargeTime: 1.5
+  ChargeTime: 0.3
   ReloadTime: 1
   Slowdown: 0.2
   Bullet: {fileID: 7248914991646833943, guid: e0b7bbaef6aa2fd41a01713dbe402dbc, type: 3}

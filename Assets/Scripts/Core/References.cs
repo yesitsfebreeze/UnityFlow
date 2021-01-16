@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class References : MonoBehaviour
 {
-  // Start is called before the first frame update
+
+  public SO_DefaultReferences defaultReferences;
 
   private Dictionary<string, MonoBehaviour> references = new Dictionary<string, MonoBehaviour>();
 

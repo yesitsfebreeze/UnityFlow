@@ -15,6 +15,7 @@ public class Launcher : ReferenceAwareMonoBehaviour
   public GameObject[] selectedNades;
   private IEnumerator launchRoutine;
   private bool launchRoutineStarted = false;
+  private Player player;
 
 
   void OnEnable()
@@ -47,10 +48,10 @@ public class Launcher : ReferenceAwareMonoBehaviour
   // Start is called before the first frame update
   void Start()
   {
+    // todo: do that via UI
     SetSlot(0, 0);
     SetSlot(1, 1);
     SetSlot(2, 2);
-
   }
 
   // Update is called once per frame
@@ -74,7 +75,7 @@ public class Launcher : ReferenceAwareMonoBehaviour
   public void SetSlot(int slot, int nade)
   {
     GameObject selectedNade = settings.Nades[nade];
-    UI.AddNadeCooldown(selectedNade, nade, settings.Cooldowns[slot]);
+    UI.AddNadeCooldown(selectedNade, nade, settings.Cooldowns[slot], settings.KeyBinds[slot]);
     selectedNades[slot] = selectedNade;
   }
 
@@ -118,18 +119,20 @@ public class Launcher : ReferenceAwareMonoBehaviour
 
   IEnumerator LaunchNade(int slot)
   {
+    if (player == null) player = references.Get("Player") as Player;
+
     launchRoutineStarted = true;
     reloadCooldown = settings.RechargeTime;
     Movement movement = GetComponent<Movement>() as Movement;
 
     movement.Slow(settings.Slowdown);
+    player.unitUI.SetCastTime(settings.LaunchTimes[slot]);
     yield return new WaitForSeconds(settings.LaunchTimes[slot]);
     movement.ResetSlow();
 
     cooldowns[slot] = settings.Cooldowns[slot];
     reloadCooldown = settings.RechargeTime;
 
-    Player player = GetComponent<Player>() as Player;
     Object selectedNade = GetNade(slot);
 
     Vector3 from = transform.position;

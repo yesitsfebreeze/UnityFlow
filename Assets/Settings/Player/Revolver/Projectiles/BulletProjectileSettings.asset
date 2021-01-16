@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BulletProjectileSettings
   m_EditorClassIdentifier: 
   ColliderSizeMultiplier: 1.5
-  Speed: 20
-  Range: 20
-  Fx: {fileID: 0}
+  Speed: 35
+  Range: 17
+  Fx: {fileID: 1134129239631916, guid: 7e48ba6b1b968764490bbc70b66e3fe1, type: 3}

@@ -7,17 +7,9 @@ public class References : MonoBehaviour
 {
   // Start is called before the first frame update
 
-  private Dictionary<string, MonoBehaviour> references;
+  private Dictionary<string, MonoBehaviour> references = new Dictionary<string, MonoBehaviour>();
 
   public string[] registered;
-
-  void Awake()
-  {
-
-    references = new Dictionary<string, MonoBehaviour>();
-    registered = new string[references.Keys.Count];
-  }
-
 
   public void Add(string name, MonoBehaviour classRef)
   {

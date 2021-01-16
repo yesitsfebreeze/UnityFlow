@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 016d99cfd7485d44580b0090279d7eab, type: 3}
+  m_Name: BulletProjectileSettings
+  m_EditorClassIdentifier: 
+  ColliderSizeMultiplier: 1.5
+  Speed: 20
+  Range: 20
+  Fx: {fileID: 0}

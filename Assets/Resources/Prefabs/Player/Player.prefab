@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 922121831653478818}
   m_Layer: 0
   m_Name: Model
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 922121832240303181}
   m_Layer: 0
   m_Name: CameraBoomAnchor
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -293,8 +293,7 @@ MonoBehaviour:
   - 0
   - 0
   reloadCooldown: 0
-  nadeTypes: {fileID: 11400000, guid: 5ce507777257c3949b422726486009dd, type: 2}
-  launcherSettings: {fileID: 11400000, guid: c60b27b112b5d8548afcf83aa051bfe3, type: 2}
+  settings: {fileID: 11400000, guid: c4176f453a4d43442ab143dd5d8bf046, type: 2}
   selectedNades: []
 --- !u!114 &8149124012118256435
 MonoBehaviour:
@@ -310,7 +309,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ammo: 3
   superAmmo: 0
-  revolverSettings: {fileID: 11400000, guid: 1db384fd4f24eef4791136609f02910e, type: 2}
+  settings: {fileID: 11400000, guid: dffccbd11a06ba34aa0aebec1ca85330, type: 2}
 --- !u!1 &922121832612181693
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,7 +321,7 @@ GameObject:
   - component: {fileID: 922121832612181692}
   m_Layer: 0
   m_Name: CameraBoomArm
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -356,7 +355,7 @@ GameObject:
   - component: {fileID: 3437572661045375628}
   m_Layer: 0
   m_Name: CameraBoomCamera
-  m_TagString: MainCamera
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -454,8 +453,8 @@ GameObject:
   - component: {fileID: 922121833204952601}
   - component: {fileID: 922121833204952598}
   m_Layer: 0
-  m_Name: Capsule
-  m_TagString: Untagged
+  m_Name: PlayerCapsule1
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -497,6 +496,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -548,8 +548,8 @@ GameObject:
   - component: {fileID: 4071283421903411536}
   - component: {fileID: 4443417187362891588}
   m_Layer: 0
-  m_Name: Capsule (1)
-  m_TagString: Untagged
+  m_Name: PlayerCapsule2
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -591,6 +591,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

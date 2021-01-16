@@ -3,35 +3,26 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Launcher : MonoBehaviour
+public class Launcher : ReferenceAwareMonoBehaviour
 {
 
   public float[] cooldowns = new float[3];
   public float reloadCooldown;
 
   private PlayerControls playerControls;
-  public NadeTypesSO nadeTypes;
-  public LauncherSettingsSO launcherSettings;
-  private Object[] allNades;
+  private IngameUI UI;
+  public SO_LauncherSettings settings;
   public GameObject[] selectedNades;
   private IEnumerator launchRoutine;
   private bool launchRoutineStarted = false;
 
 
-  void Awake()
-  {
-    int nadeKey = 0;
-    FieldInfo[] nadeFields = nadeTypes.GetType().GetFields();
-    allNades = new Object[nadeFields.Length];
-    foreach (var nade in nadeFields)
-    {
-      allNades[nadeKey] = nade.GetValue(nadeTypes) as Object;
-      nadeKey++;
-    }
-  }
-
   void OnEnable()
   {
+    selectedNades = new GameObject[3];
+
+    UI = references.Get("IngameUI") as IngameUI;
+
     playerControls = new PlayerControls();
     playerControls.Enable();
 
@@ -56,34 +47,39 @@ public class Launcher : MonoBehaviour
   // Start is called before the first frame update
   void Start()
   {
+    SetSlot(0, 0);
+    SetSlot(1, 1);
+    SetSlot(2, 2);
 
   }
 
   // Update is called once per frame
   void Update()
   {
+
+    if (reloadCooldown > 0) reloadCooldown -= Time.deltaTime;
+    if (reloadCooldown < 0) reloadCooldown = 0;
+
     int slot = 0;
     foreach (float cd in cooldowns)
     {
       if (cooldowns[slot] > 0) cooldowns[slot] -= Time.deltaTime;
       if (cooldowns[slot] < 0) cooldowns[slot] = 0;
+      UI.UpdateNadeCooldown(slot, cooldowns[slot], reloadCooldown);
+
       slot++;
     }
-
-    if (reloadCooldown > 0) reloadCooldown -= Time.deltaTime;
-    if (reloadCooldown < 0) reloadCooldown = 0;
-
   }
 
-  public void setSlot(int slot, int nade)
+  public void SetSlot(int slot, int nade)
   {
-    // selectedNades[slot] = nade;
+    GameObject selectedNade = settings.Nades[nade];
+    UI.AddNadeCooldown(selectedNade, nade, settings.Cooldowns[slot]);
+    selectedNades[slot] = selectedNade;
   }
 
-  public Object getNade(int slot)
+  public Object GetNade(int slot)
   {
-    return allNades[slot];
-    // turn that on when nade slection is functional
     return selectedNades[slot];
   }
 
@@ -114,7 +110,7 @@ public class Launcher : MonoBehaviour
     if (!launchRoutineStarted) return;
 
     Movement movement = GetComponent<Movement>() as Movement;
-    reloadCooldown = launcherSettings.RechargeTime;
+    reloadCooldown = settings.RechargeTime;
     StopCoroutine(launchRoutine);
     launchRoutineStarted = false;
     movement.ResetSlow();
@@ -123,18 +119,18 @@ public class Launcher : MonoBehaviour
   IEnumerator LaunchNade(int slot)
   {
     launchRoutineStarted = true;
-    reloadCooldown = launcherSettings.RechargeTime;
+    reloadCooldown = settings.RechargeTime;
     Movement movement = GetComponent<Movement>() as Movement;
 
-    movement.Slow(launcherSettings.Slowdown);
-    yield return new WaitForSeconds(launcherSettings.LaunchTimes[slot]);
+    movement.Slow(settings.Slowdown);
+    yield return new WaitForSeconds(settings.LaunchTimes[slot]);
     movement.ResetSlow();
 
-    cooldowns[slot] = launcherSettings.Cooldowns[slot];
-    reloadCooldown = launcherSettings.RechargeTime;
+    cooldowns[slot] = settings.Cooldowns[slot];
+    reloadCooldown = settings.RechargeTime;
 
     Player player = GetComponent<Player>() as Player;
-    Object selectedNade = getNade(slot);
+    Object selectedNade = GetNade(slot);
 
     Vector3 from = transform.position;
     Vector3 to = player.mouseWorldPosition;

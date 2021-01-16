@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Nade : ReferenceAwareMonoBehaviour
 {
-  public LauncherSettingsSO launcherSettings;
+  public SO_NadeSettings settings;
   public UnityEngine.Object HitFx;
 
   private Vector3 target;
@@ -18,10 +18,8 @@ public class Nade : ReferenceAwareMonoBehaviour
   {
     if (!launchable) return;
 
-
-    float percent = Math.Abs((startTime - Time.time) / launcherSettings.TimeToLand);
-
-    transform.position = Parabola(position, target, launcherSettings.ArcHeight, percent);
+    float percent = Math.Abs((startTime - Time.time) / settings.TimeToLand);
+    transform.position = Parabola(position, target, settings.ArcHeight, percent);
 
     if (percent >= 1)
     {
@@ -38,9 +36,9 @@ public class Nade : ReferenceAwareMonoBehaviour
     position = transform.position;
     target = to;
     float distance = Vector3.Distance(position, target);
-    if (distance > launcherSettings.MaxRange)
+    if (distance > settings.MaxRange)
     {
-      target = position + Vector3.ClampMagnitude(target - position, launcherSettings.MaxRange);
+      target = position + Vector3.ClampMagnitude(target - position, settings.MaxRange);
     }
 
     target.y = 100000f;
@@ -67,11 +65,14 @@ public class Nade : ReferenceAwareMonoBehaviour
 
   IEnumerator Landed()
   {
-    yield return new WaitForSeconds(launcherSettings.IgniteDelay);
+    yield return new WaitForSeconds(settings.IgniteDelay);
 
-    GameObject hitFx = Instantiate(HitFx, new Vector3(target.x, target.y + 0.5f, target.z), Quaternion.identity) as GameObject;
+    if (HitFx)
+    {
+      GameObject hitFx = Instantiate(HitFx, new Vector3(target.x, target.y + 0.5f, target.z), Quaternion.identity) as GameObject;
+    }
+
     CameraShake();
-
     Destroy(this);
     Destroy(gameObject);
   }

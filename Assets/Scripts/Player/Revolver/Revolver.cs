@@ -8,7 +8,7 @@ public class Revolver : ReferenceAwareMonoBehaviour
 
   public int ammo;
   public int superAmmo;
-  public RevolverSettingSO revolverSettings;
+  public SO_RevolverSettings settings;
 
   private bool isReloading = false;
   private bool isRecharging = false;
@@ -24,7 +24,7 @@ public class Revolver : ReferenceAwareMonoBehaviour
   override public void Awake()
   {
     base.Awake();
-    ammo = revolverSettings.MaxAmmo;
+    ammo = settings.MaxAmmo;
     superAmmo = 0;
     movement = GetComponent<Movement>() as Movement;
   }
@@ -74,18 +74,18 @@ public class Revolver : ReferenceAwareMonoBehaviour
   IEnumerator Shoot()
   {
     isShooting = true;
-    movement.Slow(revolverSettings.Slowdown);
-    yield return new WaitForSeconds(revolverSettings.ShootTime);
+    movement.Slow(settings.Slowdown);
+    yield return new WaitForSeconds(settings.ShootTime);
 
-    GameObject bullet = Instantiate(revolverSettings.BulletPrefab, transform.position, movement.rotation) as GameObject;
-    Bullet Bullet = bullet.GetComponent<Bullet>() as Bullet;
+    GameObject bullet = Instantiate(settings.Bullet, transform.position, movement.rotation) as GameObject;
+    Projectile projectile = bullet.GetComponent<Projectile>() as Projectile;
 
     Player player = references.Get("Player") as Player;
     if (!player) yield break;
 
-    Bullet.Fire(player.mouseWorldPosition);
+    projectile.Fire(player.mouseWorldPosition);
     ammo--;
-    yield return new WaitForSeconds(revolverSettings.ShootTime * 0.6f);
+    yield return new WaitForSeconds(settings.ShootTime * 0.6f);
     movement.ResetSlow();
     StartCoroutine(Recharge());
     isShooting = false;
@@ -94,20 +94,20 @@ public class Revolver : ReferenceAwareMonoBehaviour
   IEnumerator ShootSuper()
   {
     isShooting = true;
-    yield return new WaitForSeconds(revolverSettings.ShootTime);
+    yield return new WaitForSeconds(settings.ShootTime);
 
-    GameObject superBullet = Instantiate(revolverSettings.SuperBulletPrefab, transform.position, movement.rotation) as GameObject;
-    SuperBullet SuperBullet = superBullet.GetComponent<SuperBullet>() as SuperBullet;
+    GameObject superBullet = Instantiate(settings.SuperBullet, transform.position, movement.rotation) as GameObject;
+    Projectile projectile = superBullet.GetComponent<Projectile>() as Projectile;
 
 
     Player player = references.Get("Player") as Player;
     if (!player) yield break;
 
 
-    SuperBullet.Fire(player.mouseWorldPosition);
+    projectile.Fire(player.mouseWorldPosition);
     superAmmo = 0;
     isCharging = false;
-    yield return new WaitForSeconds(revolverSettings.ShootTime * 0.6f);
+    yield return new WaitForSeconds(settings.ShootTime * 0.6f);
     movement.ResetSlow();
     StartCoroutine(Recharge());
     isShooting = false;
@@ -116,7 +116,7 @@ public class Revolver : ReferenceAwareMonoBehaviour
   IEnumerator Recharge()
   {
     isRecharging = true;
-    yield return new WaitForSeconds(revolverSettings.RechargeTime);
+    yield return new WaitForSeconds(settings.RechargeTime);
     isRecharging = false;
   }
 
@@ -162,7 +162,7 @@ public class Revolver : ReferenceAwareMonoBehaviour
   IEnumerator ChargeUp()
   {
     isCharging = true;
-    yield return new WaitForSeconds(revolverSettings.ChargeTime);
+    yield return new WaitForSeconds(settings.ChargeTime);
     if (ammo > 0)
     {
       ammo--;
@@ -174,8 +174,8 @@ public class Revolver : ReferenceAwareMonoBehaviour
   IEnumerator Reload()
   {
     isReloading = true;
-    yield return new WaitForSeconds(revolverSettings.ReloadTime);
-    ammo = revolverSettings.MaxAmmo;
+    yield return new WaitForSeconds(settings.ReloadTime);
+    ammo = settings.MaxAmmo;
     isReloading = false;
   }
 }

@@ -9,11 +9,17 @@ public class Player : ReferencedReferenceAwareMonoBehaviour
   public Vector3 mousePosition;
   public Vector3 mouseWorldPosition;
   public UnitUI unitUI;
-
+  public bool isCasting = false;
 
   private PlayerControls playerControls;
   private GameObject unitUIGO;
   private HealthState health;
+
+
+  public void SetCasting(bool state)
+  {
+    isCasting = state;
+  }
 
   void OnEnable()
   {

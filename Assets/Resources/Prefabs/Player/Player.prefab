@@ -148,6 +148,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mousePosition: {x: 0, y: 0, z: 0}
   mouseWorldPosition: {x: 0, y: 0, z: 0}
+  unitUI: {fileID: 0}
+  isCasting: 0
 --- !u!114 &1222836943232413077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,6 +279,7 @@ MonoBehaviour:
   launchingMultiplicator: 0.15
   Model: {fileID: 0}
   rotation: {x: 0, y: 0, z: 0, w: 0}
+  dashDefinition: {fileID: 11400000, guid: 437c8ed1da0ce30469ded716c3df4bc4, type: 2}
 --- !u!114 &8917565953820802863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,7 +296,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  reloadCooldown: 0
+  rechargeCooldown: 0
   settings: {fileID: 11400000, guid: c4176f453a4d43442ab143dd5d8bf046, type: 2}
   selectedNades: []
 --- !u!114 &8149124012118256435
@@ -367,7 +370,7 @@ GameObject:
   - component: {fileID: 922121832919027477}
   - component: {fileID: 922121832919027479}
   - component: {fileID: 922121832919027476}
-  - component: {fileID: 3437572661045375628}
+  - component: {fileID: 921122447758179830}
   m_Layer: 0
   m_Name: CameraBoomCamera
   m_TagString: MainCamera
@@ -440,7 +443,7 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 922121832919027474}
   m_Enabled: 1
---- !u!114 &3437572661045375628
+--- !u!114 &921122447758179830
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -449,12 +452,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 922121832919027474}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 005fffd5b06784a7fb8ab04ad8bd69af, type: 3}
+  m_Script: {fileID: 11500000, guid: 7562f149210a3af488b4fe7f7ca7235a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shakeDuration: 0
-  shakeAmount: 0.7
-  shakeDecline: 1
 --- !u!1 &922121833204952596
 GameObject:
   m_ObjectHideFlags: 0

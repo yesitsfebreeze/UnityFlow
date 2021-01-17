@@ -18,13 +18,12 @@ public class Projectile : ReferenceAwareMonoBehaviour
   public void Fire(Vector3 to)
   {
     startPosition = transform.position;
-    targetPosition = new Vector3(to.x, 0.5f, to.z);
+    targetPosition = new Vector3(to.x, to.y, to.z);
     fired = true;
     defaultDirection = GetDefaultDirection();
     projectileCollider = GetComponent<SphereCollider>() as SphereCollider;
     initialGroundDistance = GetGroundDistance();
     transform.LookAt(new Vector3(targetPosition.x, transform.position.y, targetPosition.z), defaultDirection);
-
   }
 
 
@@ -37,8 +36,10 @@ public class Projectile : ReferenceAwareMonoBehaviour
     float groundDistance = GetGroundDistance();
     float groundOffset = groundDistance - initialGroundDistance;
     transform.position = new Vector3(transform.position.x, transform.position.y - groundOffset, transform.position.z);
-    float distance = Vector3.Distance(startPosition, transform.position);
-    if (distance >= settings.Range) Hit();
+    float distance = Vector3.Distance(transform.position, startPosition);
+    float targetDistance = Vector3.Distance(startPosition, targetPosition);
+
+    if (distance >= settings.Range || distance >= targetDistance) Hit();
   }
 
 
@@ -77,7 +78,14 @@ public class Projectile : ReferenceAwareMonoBehaviour
 
   void CameraShake()
   {
-    PlayerCameraShake shake = references.Get("PlayerCameraShake") as PlayerCameraShake;
-    if (shake) shake.Shake(0.1f, 0.3f, 2f);
+    CameraShake shake = references.Get("CameraShake") as CameraShake;
+    if (settings.ShakePreset != null)
+    {
+      shake.Shake(settings.ShakePreset);
+    }
+    else
+    {
+      shake.Shake(settings.ShakeDuration, settings.ShakeAmount, settings.ShakeDecay);
+    }
   }
 }

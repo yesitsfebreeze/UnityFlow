@@ -7,20 +7,22 @@ public class Launcher : ReferenceAwareMonoBehaviour
 {
 
   public float[] cooldowns = new float[3];
-  public float reloadCooldown;
+  public float rechargeCooldown;
 
   private PlayerControls playerControls;
   private IngameUI UI;
   public SO_LauncherSettings settings;
-  public GameObject[] selectedNades;
+  public SO_NadeDefinition[] selectedNades;
   private IEnumerator launchRoutine;
   private bool launchRoutineStarted = false;
   private Player player;
+  private bool isLaunchPressed = false;
+  private int launchSlot;
 
 
   void OnEnable()
   {
-    selectedNades = new GameObject[3];
+    selectedNades = new SO_NadeDefinition[3];
 
     UI = references.Get("IngameUI") as IngameUI;
 
@@ -58,15 +60,40 @@ public class Launcher : ReferenceAwareMonoBehaviour
   void Update()
   {
 
-    if (reloadCooldown > 0) reloadCooldown -= Time.deltaTime;
-    if (reloadCooldown < 0) reloadCooldown = 0;
+    if (isLaunchPressed)
+    {
+      if (player == null) player = references.Get("Player") as Player;
+      if (player.isCasting) return;
+      if (rechargeCooldown > 0) return;
+      if (cooldowns[launchSlot] > 0) return;
+      isLaunchPressed = false;
+
+      launchRoutine = LaunchNade(launchSlot);
+      StartCoroutine(launchRoutine);
+    }
+
+
+    if (rechargeCooldown > 0) rechargeCooldown -= Time.deltaTime;
+    if (rechargeCooldown < 0)
+    {
+      player.SetCasting(false);
+      rechargeCooldown = 0;
+    }
 
     int slot = 0;
     foreach (float cd in cooldowns)
     {
       if (cooldowns[slot] > 0) cooldowns[slot] -= Time.deltaTime;
       if (cooldowns[slot] < 0) cooldowns[slot] = 0;
-      UI.UpdateNadeCooldown(slot, cooldowns[slot], reloadCooldown);
+
+      if (cooldowns[slot] == 0 && rechargeCooldown > 0)
+      {
+        UI.UpdateNadeCooldown(slot, rechargeCooldown, settings.RechargeTime);
+      }
+      else
+      {
+        UI.UpdateNadeCooldown(slot, cooldowns[slot], settings.Cooldowns[slot]);
+      }
 
       slot++;
     }
@@ -74,12 +101,13 @@ public class Launcher : ReferenceAwareMonoBehaviour
 
   public void SetSlot(int slot, int nade)
   {
-    GameObject selectedNade = settings.Nades[nade];
-    UI.AddNadeCooldown(selectedNade, nade, settings.Cooldowns[slot], settings.KeyBinds[slot]);
-    selectedNades[slot] = selectedNade;
+    SO_NadeDefinition definition = settings.Nades[nade];
+
+    UI.AddNadeCooldown(definition, nade, settings.KeyBinds[slot]);
+    selectedNades[slot] = definition;
   }
 
-  public Object GetNade(int slot)
+  public SO_NadeDefinition GetNade(int slot)
   {
     return selectedNades[slot];
   }
@@ -94,16 +122,14 @@ public class Launcher : ReferenceAwareMonoBehaviour
 
   void OnGrenadeLaunchPress(InputAction.CallbackContext context, int slot)
   {
-    if (reloadCooldown > 0) return;
-    if (cooldowns[slot] > 0) return;
-
-    launchRoutine = LaunchNade(slot);
-    StartCoroutine(launchRoutine);
+    isLaunchPressed = true;
+    launchSlot = slot;
   }
 
   void OnGrenadeLaunchRelease(InputAction.CallbackContext context, int slot)
   {
-
+    isLaunchPressed = false;
+    launchSlot = -1;
   }
 
   void CancelLaunchRoutine()
@@ -111,7 +137,7 @@ public class Launcher : ReferenceAwareMonoBehaviour
     if (!launchRoutineStarted) return;
 
     Movement movement = GetComponent<Movement>() as Movement;
-    reloadCooldown = settings.RechargeTime;
+    rechargeCooldown = settings.RechargeTime;
     StopCoroutine(launchRoutine);
     launchRoutineStarted = false;
     movement.ResetSlow();
@@ -120,27 +146,33 @@ public class Launcher : ReferenceAwareMonoBehaviour
   IEnumerator LaunchNade(int slot)
   {
     if (player == null) player = references.Get("Player") as Player;
+    player.SetCasting(true);
 
     launchRoutineStarted = true;
-    reloadCooldown = settings.RechargeTime;
     Movement movement = GetComponent<Movement>() as Movement;
 
     movement.Slow(settings.Slowdown);
     player.unitUI.SetCastTime(settings.LaunchTimes[slot]);
     yield return new WaitForSeconds(settings.LaunchTimes[slot]);
+
     movement.ResetSlow();
 
     cooldowns[slot] = settings.Cooldowns[slot];
-    reloadCooldown = settings.RechargeTime;
+    rechargeCooldown = settings.RechargeTime;
 
-    Object selectedNade = GetNade(slot);
+    SO_NadeDefinition selectedNade = GetNade(slot);
 
     Vector3 from = transform.position;
     Vector3 to = player.mouseWorldPosition;
-    GameObject go = Instantiate(selectedNade, from, Quaternion.identity) as GameObject;
-    go.transform.parent = gameObject.transform;
+
+    GameObject nadePrefab = settings.NadePrefab;
+    GameObject go = Instantiate(nadePrefab, from, Quaternion.identity) as GameObject;
     Nade nade = go.GetComponent<Nade>();
+
+    nade.definition = selectedNade;
+    nade.definition = selectedNade;
     nade.launch(to);
+    player.SetCasting(false);
   }
 
 }

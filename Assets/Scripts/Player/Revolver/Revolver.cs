@@ -22,7 +22,6 @@ public class Revolver : ReferenceAwareMonoBehaviour
   private Player player;
 
 
-
   override public void Awake()
   {
     base.Awake();
@@ -52,6 +51,8 @@ public class Revolver : ReferenceAwareMonoBehaviour
 
   void OnShootPress(InputAction.CallbackContext ctx)
   {
+    player.SetCasting(true);
+
     isShotDown = true;
   }
 
@@ -62,11 +63,14 @@ public class Revolver : ReferenceAwareMonoBehaviour
 
   void OnShootChargedPress(InputAction.CallbackContext ctx)
   {
+    player.SetCasting(true);
     isSupershotDown = true;
   }
 
   void OnShootChargedRelease(InputAction.CallbackContext ctx)
   {
+    if (player == null) player = references.Get("Player") as Player;
+
     StopCoroutine(chargeRoutine);
     isSupershotDown = false;
     isCharging = false;
@@ -92,6 +96,7 @@ public class Revolver : ReferenceAwareMonoBehaviour
     Projectile projectile = bullet.GetComponent<Projectile>() as Projectile;
 
     projectile.Fire(player.mouseWorldPosition);
+    player.SetCasting(true);
     ammo--;
     player.unitUI.SetBulletCount(ammo);
     yield return new WaitForSeconds(settings.ShootTime * 0.6f);
@@ -113,6 +118,7 @@ public class Revolver : ReferenceAwareMonoBehaviour
     Projectile projectile = superBullet.GetComponent<Projectile>() as Projectile;
 
     projectile.Fire(player.mouseWorldPosition);
+    player.SetCasting(true);
     superAmmo = 0;
     player.unitUI.SetSuperBulletCount(superAmmo);
     player.unitUI.SetBulletCount(ammo);
@@ -127,6 +133,7 @@ public class Revolver : ReferenceAwareMonoBehaviour
   {
     isRecharging = true;
     yield return new WaitForSeconds(settings.RechargeTime);
+    player.SetCasting(false);
     isRecharging = false;
   }
 
@@ -148,8 +155,6 @@ public class Revolver : ReferenceAwareMonoBehaviour
         isShotDown = false;
       }
     }
-
-
 
     bool shooting = isSupershotDown || isShotDown;
 
@@ -196,8 +201,8 @@ public class Revolver : ReferenceAwareMonoBehaviour
       ammo--;
       superAmmo++;
       player.unitUI.SetSuperBulletCount(superAmmo);
+      isCharging = false;
     }
-    isCharging = false;
   }
 
   IEnumerator Reload()

@@ -44,23 +44,13 @@ lifesteal
 shield
 
 
-
-
-
-
 foam
 steam
-
-
 
 stun
 slow
 blinds
 fears
-
-
-
-
 
 explosive
 plasma

@@ -8,4 +8,10 @@ public class SO_NadeSettings : ScriptableObject
   public float MaxRange = 20f;
   public float IgniteDelay = 0.6f;
 
+  [Header("CameraShake")]
+  public SO_CameraShakePreset ShakePreset;
+  public float ShakeDuration;
+  public float ShakeAmount;
+  public float ShakeDecay;
+
 }

@@ -4,5 +4,6 @@ using UnityEngine;
 public class SO_UISettings : ScriptableObject
 {
   [Header("Launcher")]
-  public GameObject Cooldown;
+  public GameObject NadeCooldown;
+  public GameObject DashCooldown;
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Movement : MonoBehaviour
+public class Movement : ReferenceAwareMonoBehaviour
 {
   [Header("Movement Settings")]
 
@@ -17,11 +17,12 @@ public class Movement : MonoBehaviour
 
   [Range(0, 1)]
   public float launchingMultiplicator = 0.1f;
+  public SO_DashDefinition dashDefinition;
+
 
   [Header("Auto Assigned Components")]
   public GameObject Model;
   public Quaternion rotation;
-
 
   private PlayerControls playerControls;
   private Vector2 direction;
@@ -33,6 +34,8 @@ public class Movement : MonoBehaviour
   private Collider playerCollider;
   private float currentSpeed;
   private Rigidbody rb;
+  private IngameUI UI;
+
 
   public void Slow(float multiplicator)
   {
@@ -59,6 +62,8 @@ public class Movement : MonoBehaviour
 
     playerControls.CharacterControls.Movement.performed += OnMovement;
     playerControls.CharacterControls.Movement.canceled += OnMovementCanceled;
+    playerControls.CharacterControls.Dash.performed += OnDash;
+    playerControls.CharacterControls.Dash.canceled += OnDashCanceled;
 
     playerControls.CharacterControls.MousePos.performed += OnMousePos;
 
@@ -76,6 +81,9 @@ public class Movement : MonoBehaviour
   {
     Model = transform.Find("Model").gameObject;
     playerCollider = GetComponent<CapsuleCollider>() as Collider;
+    UI = references.Get("IngameUI") as IngameUI;
+
+    UI.AddDashCooldown(dashDefinition);
   }
 
   // Update is called once per frame
@@ -100,6 +108,17 @@ public class Movement : MonoBehaviour
   bool IsGrounded()
   {
     return Physics.SphereCast(transform.position, playerCollider.bounds.size.x / 2, Vector3.down, out RaycastHit hit, playerCollider.bounds.size.y * 0.6f);
+  }
+
+
+  void OnDash(InputAction.CallbackContext context)
+  {
+    print("dash down");
+  }
+
+  void OnDashCanceled(InputAction.CallbackContext context)
+  {
+    print("dash up");
   }
 
   void OnMovement(InputAction.CallbackContext context)

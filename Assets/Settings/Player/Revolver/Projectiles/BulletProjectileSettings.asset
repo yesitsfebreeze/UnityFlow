@@ -16,3 +16,7 @@ MonoBehaviour:
   Speed: 35
   Range: 17
   Fx: {fileID: 1134129239631916, guid: 7e48ba6b1b968764490bbc70b66e3fe1, type: 3}
+  ShakePreset: {fileID: 11400000, guid: 25f89293247025847899a25a6fe85456, type: 2}
+  ShakeDuration: 0
+  ShakeAmount: 0
+  ShakeDecay: 0

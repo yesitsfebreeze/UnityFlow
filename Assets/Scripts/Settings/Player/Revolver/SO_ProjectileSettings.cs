@@ -8,4 +8,10 @@ public class SO_ProjectileSettings : ScriptableObject
   public float Speed = 20f;
   public float Range = 20f;
   public GameObject Fx;
+
+  [Header("CameraShake")]
+  public SO_CameraShakePreset ShakePreset;
+  public float ShakeDuration;
+  public float ShakeAmount;
+  public float ShakeDecay;
 }

@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35e2b12fce132c3498c820567d413e8f, type: 3}
   m_Name: UISettings
   m_EditorClassIdentifier: 
-  Cooldown: {fileID: 8113126921273058571, guid: 1cb7765d2e067314d95f155f84a43ef6,
+  NadeCooldown: {fileID: 8113126921273058571, guid: 1cb7765d2e067314d95f155f84a43ef6,
+    type: 3}
+  DashCooldown: {fileID: 7094386932163274484, guid: 57aec903345084b4ca706acd9296e27d,
     type: 3}

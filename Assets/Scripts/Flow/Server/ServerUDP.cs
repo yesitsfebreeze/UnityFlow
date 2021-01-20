@@ -3,13 +3,13 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-namespace Networking
+namespace Flow
 {
   public class ServerUDP
   {
 
     private static Server server;
-    private static SO_NetworkSettings settings;
+    private static FlowSettings settings;
     private static UdpClient listener;
     private static bool isStopped = true;
 
@@ -33,7 +33,7 @@ namespace Networking
     }
 
 
-    public static void SendData(IPEndPoint clientEndPoint, Package package)
+    public static void SendData(IPEndPoint clientEndPoint, FlowPackage package)
     {
       try
       {
@@ -60,7 +60,7 @@ namespace Networking
 
         if (_data.Length < 4) return;
 
-        using (Package package = new Package(_data))
+        using (FlowPackage package = new FlowPackage(_data))
         {
           int clientID = package.ReadInt();
           if (clientID == 0) return;

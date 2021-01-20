@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Networking
+namespace Flow
 {
 
   public class Server : MonoBehaviour
   {
-    public SO_NetworkSettings NetworkSettings;
+    public FlowSettings FlowSettings;
 
     public static Dictionary<int, ServerClient> clients = new Dictionary<int, ServerClient>();
     public delegate void ClientIteration(ServerClient client);
-    public static SO_NetworkSettings settings;
+    public static FlowSettings settings;
 
     public enum Protocol
     {
@@ -23,10 +23,10 @@ namespace Networking
     /// <summary>Starts the server and listends for connections.</summary>
     void Start()
     {
-      settings = NetworkSettings;
+      settings = FlowSettings;
       gameObject.AddComponent<ThreadManager>();
-      NetworkActions actions = gameObject.AddComponent<NetworkActions>();
-      actions.NetworkSettings = settings;
+      FlowActions actions = gameObject.AddComponent<FlowActions>();
+      actions.FlowSettings = settings;
 
       // setup unity to run efficently on headless mode
       Time.fixedDeltaTime = 1f / settings.TICK_RATE;
@@ -95,51 +95,51 @@ namespace Networking
     #region DataSending
 
     #region DataSending TCP
-    public static void TCPSend(Package package, int clientID)
+    public static void TCPSend(FlowPackage package, int clientID)
     {
       Send(Protocol.TCP, package, clientID);
     }
-    public static void TCPSendAll(Package package)
+    public static void TCPSendAll(FlowPackage package)
     {
       SendAll(Protocol.TCP, package);
     }
-    public static void TCPSendAllExcept(Package package, int[] exceptClientIDs)
+    public static void TCPSendAllExcept(FlowPackage package, int[] exceptClientIDs)
     {
       SendAllExcept(Protocol.TCP, package, exceptClientIDs);
     }
-    public static void TCPSendSpecific(Package package, int[] specificClientIDs)
+    public static void TCPSendSpecific(FlowPackage package, int[] specificClientIDs)
     {
       SendAllExcept(Protocol.TCP, package, specificClientIDs);
     }
     #endregion
 
     #region DataSending UDP
-    public static void UDPSend(Package package, int clientID)
+    public static void UDPSend(FlowPackage package, int clientID)
     {
       Send(Protocol.UDP, package, clientID);
     }
-    public static void UDPSendAll(Package package)
+    public static void UDPSendAll(FlowPackage package)
     {
       SendAll(Protocol.UDP, package);
     }
-    public static void UDPSendAllExcept(Package package, int[] exceptClientIDs)
+    public static void UDPSendAllExcept(FlowPackage package, int[] exceptClientIDs)
     {
       SendAllExcept(Protocol.UDP, package, exceptClientIDs);
     }
-    public static void UDPSendSpecific(Package package, int[] specificClientIDs)
+    public static void UDPSendSpecific(FlowPackage package, int[] specificClientIDs)
     {
       SendAllExcept(Protocol.UDP, package, specificClientIDs);
     }
     #endregion
 
-    public static void Send(Protocol protocol, Package package, int clientID)
+    public static void Send(Protocol protocol, FlowPackage package, int clientID)
     {
       package.WriteLength();
       ServerClient client = Server.clients[clientID];
       SendData(protocol, package, client);
     }
 
-    public static void SendAll(Protocol protocol, Package package)
+    public static void SendAll(Protocol protocol, FlowPackage package)
     {
       IterateClients((ServerClient client) =>
       {
@@ -147,7 +147,7 @@ namespace Networking
       });
     }
 
-    public static void SendAllExcept(Protocol protocol, Package package, int[] exceptClientIDs)
+    public static void SendAllExcept(Protocol protocol, FlowPackage package, int[] exceptClientIDs)
     {
       // except ids
       IterateClients((ServerClient client) =>
@@ -159,7 +159,7 @@ namespace Networking
       });
     }
 
-    public static void SendSpecific(Protocol protocol, Package package, int[] specificClientIDs)
+    public static void SendSpecific(Protocol protocol, FlowPackage package, int[] specificClientIDs)
     {
       // specific ids
       IterateClients((ServerClient client) =>
@@ -171,7 +171,7 @@ namespace Networking
       });
     }
 
-    private static void SendData(Protocol protocol, Package package, ServerClient client)
+    private static void SendData(Protocol protocol, FlowPackage package, ServerClient client)
     {
       if (protocol == Protocol.TCP) client.tcp.SendData(package);
       if (protocol == Protocol.UDP) client.udp.SendData(package);

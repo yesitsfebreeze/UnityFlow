@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d633f5571ace4f84eafb081ea8511096, type: 3}
+  m_Name: FlowSettings
+  m_EditorClassIdentifier: 
+  DEVELOPMENT_MODE: 1
+  IP: 127.0.0.1
+  MAX_PLAYERS: 50
+  PORT: 26950
+  TICK_RATE: 64
+  DATA_BUFFER_SIZE: 4096
+  PLAYER_PREFAB: {fileID: 0}
+  ENEMY_PREFAB: {fileID: 0}
+  SERVER_PLAYER_PREFAB: {fileID: 0}
+  actions:
+  - Connect
+  - Disconnect
+  - Spawn

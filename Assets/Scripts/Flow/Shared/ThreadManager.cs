@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Networking
+namespace Flow
 {
   public class ThreadManager : MonoBehaviour
   {

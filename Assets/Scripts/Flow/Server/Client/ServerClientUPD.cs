@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Networking
+namespace Flow
 {
   public class ServerClientUDP
   {
@@ -24,14 +24,14 @@ namespace Networking
 
     /// <summary>Sends data to the client via UDP.</summary>
     /// <param name="package">The package to send.</param>
-    public void SendData(Package package)
+    public void SendData(FlowPackage package)
     {
       ServerUDP.SendData(endPoint, package);
     }
 
     /// <summary>Prepares received data to be used by the appropriate package handler methods.</summary>
     /// <param name="packageData">The package containing the recieved data.</param>
-    public void HandleData(Package packageData)
+    public void HandleData(FlowPackage packageData)
     {
       int packageLength = packageData.ReadInt();
       byte[] packageBytes = packageData.ReadBytes(packageLength);
@@ -40,10 +40,10 @@ namespace Networking
       {
 
         // Call appropriate method to handle the package
-        using (Package package = new Package(packageBytes))
+        using (FlowPackage package = new FlowPackage(packageBytes))
         {
           int packageId = package.ReadInt();
-          NetworkAction action = Actions.GetByID(packageId);
+          FlowAction action = Actions.GetByID(packageId);
           action.FromClient(id, package);
         }
       });

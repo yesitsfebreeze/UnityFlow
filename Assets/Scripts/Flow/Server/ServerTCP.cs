@@ -1,18 +1,16 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-namespace Networking
+namespace Flow
 {
 
   public static class ServerTCP
   {
 
     private static Server server;
-    private static SO_NetworkSettings settings;
+    private static FlowSettings settings;
     private static TcpListener listener;
     private static bool isStopped = true;
 

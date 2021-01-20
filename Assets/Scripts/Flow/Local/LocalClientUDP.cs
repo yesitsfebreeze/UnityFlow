@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System;
 
-namespace Networking
+namespace Flow
 {
   public class LocalClientUDP
   {
@@ -27,7 +27,7 @@ namespace Networking
       socket.Connect(endPoint);
       socket.BeginReceive(ReceiveCallback, null);
 
-      using (Package package = new Package())
+      using (FlowPackage package = new FlowPackage())
       {
         SendData(package);
       }
@@ -35,7 +35,7 @@ namespace Networking
 
     /// <summary>Sends data to the client via UDP.</summary>
     /// <param name="package">The package to send.</param>
-    public void SendData(Package package)
+    public void SendData(FlowPackage package)
     {
       try
       {
@@ -77,7 +77,7 @@ namespace Networking
     /// <param name="data">The recieved data.</param>
     private void HandleData(byte[] data)
     {
-      using (Package package = new Package(data))
+      using (FlowPackage package = new FlowPackage(data))
       {
         int packageLength = package.ReadInt();
         data = package.ReadBytes(packageLength);
@@ -85,10 +85,10 @@ namespace Networking
 
       ThreadManager.ExecuteOnMainThread(() =>
       {
-        using (Package package = new Package(data))
+        using (FlowPackage package = new FlowPackage(data))
         {
           int packageId = package.ReadInt();
-          NetworkAction action = Actions.GetByID(packageId);
+          FlowAction action = Actions.GetByID(packageId);
           action.FromServer(package);
         }
       });

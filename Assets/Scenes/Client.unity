@@ -675,7 +675,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcac8f173ad87a54aa8fd2214891971d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NetworkSettings: {fileID: 11400000, guid: c640178cea4f0ad45aeb7a3116877dd0, type: 2}
+  FlowSettings: {fileID: 11400000, guid: 271af5e86ca9d514e894b47e04e402b0, type: 2}
   wasConnected: 0
   id: 0
   ip: 

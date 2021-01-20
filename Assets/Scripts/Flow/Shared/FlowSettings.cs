@@ -1,8 +1,8 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NetworkSettings", menuName = "ScriptableObjects/NetworkSettings", order = 1)]
+[CreateAssetMenu(fileName = "FlowSettings", menuName = "ScriptableObjects/FlowSettings", order = 1)]
 
-public class SO_NetworkSettings : ScriptableObject
+public class FlowSettings : ScriptableObject
 {
 
   public bool DEVELOPMENT_MODE = true;

@@ -1,9 +1,9 @@
 using System;
 using System.Net.Sockets;
 using UnityEngine;
-using NetworkingActions;
+using FlowActions;
 
-namespace Networking
+namespace Flow
 {
   public class ServerClientTCP
   {
@@ -12,7 +12,7 @@ namespace Networking
 
     private readonly int id;
     private NetworkStream stream;
-    private Package receivedPackage;
+    private FlowPackage receivedPackage;
     private byte[] receiveBuffer;
 
     public ServerClientTCP(int clientID)
@@ -32,12 +32,12 @@ namespace Networking
 
         stream = socket.GetStream();
 
-        receivedPackage = new Package();
+        receivedPackage = new FlowPackage();
         receiveBuffer = new byte[Server.settings.DATA_BUFFER_SIZE];
 
         stream.BeginRead(receiveBuffer, 0, Server.settings.DATA_BUFFER_SIZE, ReceiveCallback, null);
 
-        NA_Connect action = Actions.Get("Connect") as NA_Connect;
+        ConnectFlow action = Actions.Get("Connect") as ConnectFlow;
         action.ToClient(id, "Successfully connected to the server");
         isConnected = true;
       }
@@ -49,7 +49,7 @@ namespace Networking
 
     /// <summary>Sends data to the client via TCP.</summary>
     /// <param name="package">The package to send.</param>
-    public void SendData(Package package)
+    public void SendData(FlowPackage package)
     {
       try
       {
@@ -115,10 +115,10 @@ namespace Networking
       ThreadManager.ExecuteOnMainThread(() =>
       {
         // get package from server
-        using (Package package = new Package(packageBytes))
+        using (FlowPackage package = new FlowPackage(packageBytes))
         {
           int packageId = package.ReadInt();
-          NetworkAction action = Actions.GetByID(packageId);
+          FlowAction action = Actions.GetByID(packageId);
           action.FromClient(id, package);
         }
       });

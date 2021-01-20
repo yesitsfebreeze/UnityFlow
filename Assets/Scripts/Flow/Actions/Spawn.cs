@@ -1,17 +1,17 @@
 using UnityEngine;
-using Networking;
+using Flow;
 
-namespace NetworkingActions
+namespace FlowActions
 {
-  public class NA_Spawn : NetworkAction
+  public class SpawnFlow : FlowAction
   {
 
-    override public void FromClient(int clientID, Package package)
+    override public void FromClient(int clientID, FlowPackage package)
     {
 
     }
 
-    override public void FromServer(Package package)
+    override public void FromServer(FlowPackage package)
     {
       int clientID = package.ReadInt();
       Vector3 position = package.ReadVector3();
@@ -43,7 +43,7 @@ namespace NetworkingActions
       Instantiate(settings.SERVER_PLAYER_PREFAB, position, rotation);
 
       // create player for local client
-      using (Package package = new Package(GetID()))
+      using (FlowPackage package = new FlowPackage(GetID()))
       {
         package.Write(clientID);
         package.Write(position);
@@ -59,7 +59,7 @@ namespace NetworkingActions
       // {
       //   // if (client.id != clientID)
       //   // {
-      //   using (Package package = new Package(GetID()))
+      //   using (FlowPackage package = new FlowPackage(GetID()))
       //   {
       //     package.Write(clientID);
       //     package.Write(position);

@@ -1,13 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
 
-namespace Networking
+namespace Flow
 {
-  public class Package : IDisposable
+  public class FlowPackage : IDisposable
   {
     private List<byte> buffer;
     private byte[] readableBuffer;
@@ -16,7 +15,7 @@ namespace Networking
     public int readPos;
 
     /// <summary>Creates a new empty package (without an ID).</summary>
-    public Package()
+    public FlowPackage()
     {
       buffer = new List<byte>(); // Initialize buffer
       readPos = 0; // Set readPos to 0
@@ -24,7 +23,7 @@ namespace Networking
 
     /// <summary>Creates a new package with a given ID. Used for sending.</summary>
     /// <param name="id">The package ID.</param>
-    public Package(int id)
+    public FlowPackage(int id)
     {
       buffer = new List<byte>(); // Initialize buffer
       readPos = 0; // Set readPos to 0
@@ -34,7 +33,7 @@ namespace Networking
 
     /// <summary>Creates a package from which data can be read. Used for receiving.</summary>
     /// <param name="data">The bytes to add to the package.</param>
-    public Package(byte[] data)
+    public FlowPackage(byte[] data)
     {
       buffer = new List<byte>(); // Initialize buffer
       readPos = 0; // Set readPos to 0

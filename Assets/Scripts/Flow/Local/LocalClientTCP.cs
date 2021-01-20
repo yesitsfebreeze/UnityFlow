@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System;
 
-namespace Networking
+namespace Flow
 {
   public class LocalClientTCP
   {
@@ -13,9 +13,9 @@ namespace Networking
     public delegate void OnConnectedCallbackDelegate(int port);
 
     private NetworkStream stream;
-    private Package receivedPacket;
+    private FlowPackage receivedPackage;
     private byte[] receiveBuffer;
-    private SO_NetworkSettings settings;
+    private FlowSettings settings;
     private LocalClient client;
     private OnConnectedCallbackDelegate OnConnectedCallback;
 
@@ -52,7 +52,7 @@ namespace Networking
       OnConnectedCallback(enpoint.Port);
 
       stream = socket.GetStream();
-      receivedPacket = new Package();
+      receivedPackage = new FlowPackage();
       stream.BeginRead(receiveBuffer, 0, settings.DATA_BUFFER_SIZE, ReceiveCallback, null);
 
       isConnected = true;
@@ -66,7 +66,7 @@ namespace Networking
 
     /// <summary>Sends data to the client via TCP.</summary>
     /// <param name="package">The package to send.</param>
-    public void SendData(Package package)
+    public void SendData(FlowPackage package)
     {
       try
       {
@@ -96,7 +96,7 @@ namespace Networking
         byte[] data = new byte[byteLength];
         Array.Copy(receiveBuffer, data, byteLength);
 
-        receivedPacket.Reset(HandleData(data)); // Reset receivedPacket if all data was handled
+        receivedPackage.Reset(HandleData(data)); // Reset receivedPackage if all data was handled
         stream.BeginRead(receiveBuffer, 0, settings.DATA_BUFFER_SIZE, ReceiveCallback, null);
       }
       catch
@@ -110,12 +110,12 @@ namespace Networking
     private bool HandleData(byte[] data)
     {
       // init the package with the data
-      receivedPacket.SetBytes(data);
+      receivedPackage.SetBytes(data);
 
       int packageLength = 0;
       if (CheckPacketLength(ref packageLength)) return true;
 
-      while (packageLength > 0 && packageLength <= receivedPacket.UnreadLength())
+      while (packageLength > 0 && packageLength <= receivedPackage.UnreadLength())
       {
         HandlePacket(packageLength);
         if (CheckPacketLength(ref packageLength)) return true;
@@ -130,14 +130,14 @@ namespace Networking
     private void HandlePacket(int packageLength)
     {
       // While package contains data AND package data length doesn't exceed the length of the package we're reading
-      byte[] packageBytes = receivedPacket.ReadBytes(packageLength);
+      byte[] packageBytes = receivedPackage.ReadBytes(packageLength);
       ThreadManager.ExecuteOnMainThread(() =>
       {
         // get package from server
-        using (Package package = new Package(packageBytes))
+        using (FlowPackage package = new FlowPackage(packageBytes))
         {
           int packageId = package.ReadInt();
-          NetworkAction action = Actions.GetByID(packageId);
+          FlowAction action = Actions.GetByID(packageId);
           action.FromServer(package);
         }
       });
@@ -146,9 +146,9 @@ namespace Networking
     private bool CheckPacketLength(ref int packageLength)
     {
       packageLength = 0;
-      if (receivedPacket.UnreadLength() >= 4)
+      if (receivedPackage.UnreadLength() >= 4)
       {
-        packageLength = receivedPacket.ReadInt();
+        packageLength = receivedPackage.ReadInt();
         if (packageLength <= 0) return true;
       }
       return false;
@@ -160,7 +160,7 @@ namespace Networking
       client.Disconnect();
 
       stream = null;
-      receivedPacket = null;
+      receivedPackage = null;
       receiveBuffer = null;
       socket = null;
 

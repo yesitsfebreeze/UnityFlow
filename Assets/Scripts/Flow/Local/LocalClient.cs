@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
-namespace Networking
+namespace Flow
 {
 
   public class LocalClient : MonoBehaviour
   {
     public static LocalClient instance;
-    public SO_NetworkSettings NetworkSettings;
-    public static SO_NetworkSettings settings;
+    public FlowSettings FlowSettings;
+    public static FlowSettings settings;
     public bool wasConnected = false;
 
     public int id = 0;
@@ -39,11 +39,11 @@ namespace Networking
 
     private void Start()
     {
-      settings = NetworkSettings;
+      settings = FlowSettings;
       ThreadManager threadManager = gameObject.AddComponent<ThreadManager>();
       threadManager.isClient = true;
-      NetworkActions actions = gameObject.AddComponent<NetworkActions>();
-      actions.NetworkSettings = settings;
+      FlowActions actions = gameObject.AddComponent<FlowActions>();
+      actions.FlowSettings = settings;
 
       if (settings.DEVELOPMENT_MODE)
       {
@@ -116,7 +116,7 @@ namespace Networking
 
 
     #region DataSending
-    public static void Send(Protocol protocol, Package package)
+    public static void Send(Protocol protocol, FlowPackage package)
     {
       package.WriteLength();
       if (protocol == Protocol.TCP) instance.tcp.SendData(package);
@@ -125,14 +125,14 @@ namespace Networking
 
     /// <summary>Sends a package to the server via TCP.</summary>
     /// <param name="package">The package to send to the sever.</param>
-    public static void TCPSend(Package package)
+    public static void TCPSend(FlowPackage package)
     {
       Send(Protocol.TCP, package);
     }
 
     /// <summary>Sends a package to the server via UDP.</summary>
     /// <param name="package">The package to send to the sever.</param>
-    public static void UDPSend(Package package)
+    public static void UDPSend(FlowPackage package)
     {
       Send(Protocol.UDP, package);
     }

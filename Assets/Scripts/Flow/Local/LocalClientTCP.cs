@@ -142,7 +142,7 @@ namespace Flow
         using (FlowPackage package = new FlowPackage(packageBytes))
         {
           int packageId = package.ReadInt();
-          FlowAction action = Actions.GetByID(packageId);
+          FlowAction action = FlowActions.GetByID(packageId);
           action.FromServer(package);
         }
       });

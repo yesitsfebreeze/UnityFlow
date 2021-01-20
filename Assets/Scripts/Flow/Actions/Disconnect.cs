@@ -1,9 +1,9 @@
 using UnityEngine;
 using Flow;
 
-namespace FlowActions
+namespace Flow
 {
-  public class DisconnectFlow : FlowAction
+  public class DisconnectFlowAction : FlowAction
   {
 
     override public void FromClient(int clientID, FlowPackage package)

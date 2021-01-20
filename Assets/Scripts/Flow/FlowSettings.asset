@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DEVELOPMENT_MODE: 1
   IP: 127.0.0.1
-  MAX_PLAYERS: 2
+  MAX_PLAYERS: 4
   PORT: 26950
   TICK_RATE: 64
   DATA_BUFFER_SIZE: 4096

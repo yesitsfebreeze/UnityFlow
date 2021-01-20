@@ -1,9 +1,9 @@
 using UnityEngine;
 using Flow;
 
-namespace FlowActions
+namespace Flow
 {
-  public class ConnectFlow : FlowAction
+  public class ConnectFlowAction : FlowAction
   {
 
     override public void FromClient(int clientID, FlowPackage package)
@@ -21,7 +21,7 @@ namespace FlowActions
 
       Debug.Log($"Player ({clientID}) has connected");
 
-      SpawnFlow action = Actions.Get("Spawn") as SpawnFlow;
+      SpawnFlowAction action = FlowActions.Get("Spawn") as SpawnFlowAction;
       action.ToClient(clientID, Vector3.zero + new Vector3(0, 4f, 0), Quaternion.identity);
     }
 

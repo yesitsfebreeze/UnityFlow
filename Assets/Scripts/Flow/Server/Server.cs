@@ -25,7 +25,7 @@ namespace Flow
     {
       settings = FlowSettings;
       gameObject.AddComponent<ThreadManager>();
-      FlowActions actions = gameObject.AddComponent<FlowActions>();
+      FlowActionsRegistry actions = gameObject.AddComponent<FlowActionsRegistry>();
       actions.FlowSettings = settings;
 
       // setup unity to run efficently on headless mode

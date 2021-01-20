@@ -1,9 +1,9 @@
 using UnityEngine;
 using Flow;
 
-namespace FlowActions
+namespace Flow
 {
-  public class SpawnFlow : FlowAction
+  public class SpawnFlowAction : FlowAction
   {
 
     override public void FromClient(int clientID, FlowPackage package)

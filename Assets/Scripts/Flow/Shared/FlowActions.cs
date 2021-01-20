@@ -2,27 +2,30 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using FlowActions;
 
 namespace Flow
 {
-  public class FlowActions : MonoBehaviour
+  public class FlowActionsRegistry : MonoBehaviour
   {
     public FlowSettings FlowSettings;
     public static FlowSettings settings;
     public Component[] actions;
-    public static FlowActions instance;
+    public static FlowActionsRegistry instance;
+
+    public static string POST_FIX = "FlowAction";
+    public static string NAME_SPACE = "Flow";
 
     void RegisterActions()
     {
       foreach (string action in settings.actions)
       {
-        string actionName = Regex.Replace(action, @"Flow$", "") + "Flow";
-        string actionType = "FlowActions." + actionName;
+        string actionName = Regex.Replace(action, $@"{POST_FIX}$", "") + POST_FIX;
+        Debug.Log(actionName);
+        string actionType = $"{NAME_SPACE}." + actionName;
         Type networkAction = Type.GetType(actionType);
         if (networkAction == null)
         {
-          Debug.LogError($"Action of type {actionType} not found! Check the Namespace and the 'NA_' prefix");
+          Debug.LogError($"Action of type {actionType} not found! Namespace must be '{{NAME_SPACE}}' and method must be postfixed with '{POST_FIX}'");
         }
         else
         {
@@ -63,7 +66,7 @@ namespace Flow
     }
   }
 
-  class Actions
+  class FlowActions
   {
 
     public enum actionIDs { }
@@ -74,7 +77,8 @@ namespace Flow
 
     public static void Register(FlowAction action)
     {
-      string actionName = Regex.Replace(action.GetType().Name, @"Flow$", "");
+      string actionName = Regex.Replace(action.GetType().Name, $@"{FlowActionsRegistry.POST_FIX}$", "");
+      Debug.Log(actionName);
       if (actions.TryGetValue(actionName, out FlowAction flowAction)) return;
 
       action.Register(ActionCount, actions);
@@ -117,13 +121,14 @@ namespace Flow
 
     void OnEnable()
     {
-      Actions.Register(this);
+      FlowActions.Register(this);
     }
 
     public void Register(int actionID, Dictionary<string, FlowAction> actions)
     {
       id = actionID + 1;
-      string actionName = Regex.Replace(this.GetType().Name, @"Flow$", "");
+      string actionName = Regex.Replace(this.GetType().Name, $@"{FlowActionsRegistry.POST_FIX}$", "");
+      Debug.Log(actionName);
       actions.Add(actionName, this);
     }
 

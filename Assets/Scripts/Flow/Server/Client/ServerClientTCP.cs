@@ -1,7 +1,6 @@
 using System;
 using System.Net.Sockets;
 using UnityEngine;
-using FlowActions;
 
 namespace Flow
 {
@@ -37,7 +36,7 @@ namespace Flow
 
         stream.BeginRead(receiveBuffer, 0, Server.settings.DATA_BUFFER_SIZE, ReceiveCallback, null);
 
-        ConnectFlow action = Actions.Get("Connect") as ConnectFlow;
+        ConnectFlowAction action = FlowActions.Get("Connect") as ConnectFlowAction;
         action.ToClient(id, "Successfully connected to the server");
         isConnected = true;
       }
@@ -118,7 +117,7 @@ namespace Flow
         using (FlowPackage package = new FlowPackage(packageBytes))
         {
           int packageId = package.ReadInt();
-          FlowAction action = Actions.GetByID(packageId);
+          FlowAction action = FlowActions.GetByID(packageId);
           action.FromClient(id, package);
         }
       });

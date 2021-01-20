@@ -14,12 +14,12 @@ namespace Flow
     {
     }
 
-
-    public void ToClient(int clientID, string msg)
+    override public void FromServer(FlowPackage package)
     {
     }
 
-    override public void FromServer(FlowPackage package)
+
+    public void ToClient(int clientID, string msg)
     {
     }
   }

@@ -35,17 +35,6 @@ namespace Flow
       }
     }
 
-    public void ToClient(int clientID, string msg)
-    {
-      using (FlowPackage package = new FlowPackage(GetID()))
-      {
-        package.Write(clientID);
-        package.Write(msg);
-
-        Server.TCPSend(package, clientID);
-      }
-    }
-
     override public void FromServer(FlowPackage package)
     {
       int clientID = package.ReadInt();
@@ -55,6 +44,17 @@ namespace Flow
       Debug.Log(msg);
 
       ToServer(LocalClient.instance.id, "febreeze");
+    }
+
+    public void ToClient(int clientID, string msg)
+    {
+      using (FlowPackage package = new FlowPackage(GetID()))
+      {
+        package.Write(clientID);
+        package.Write(msg);
+
+        Server.TCPSend(package, clientID);
+      }
     }
   }
 }

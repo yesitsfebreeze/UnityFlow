@@ -11,6 +11,12 @@ namespace Flow
 
     }
 
+
+    public void ToServer(int clientID, string username)
+    {
+
+    }
+
     override public void FromServer(FlowPackage package)
     {
       int clientID = package.ReadInt();
@@ -28,13 +34,6 @@ namespace Flow
       }
 
     }
-
-
-    public void ToServer(int clientID, string username)
-    {
-
-    }
-
 
     public void ToClient(int clientID, Vector3 position, Quaternion rotation)
     {

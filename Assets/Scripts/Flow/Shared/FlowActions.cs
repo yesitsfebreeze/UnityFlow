@@ -20,9 +20,9 @@ namespace Flow
       foreach (string action in settings.actions)
       {
         string actionName = Regex.Replace(action, $@"{POST_FIX}$", "") + POST_FIX;
-        Debug.Log(actionName);
         string actionType = $"{NAME_SPACE}." + actionName;
         Type networkAction = Type.GetType(actionType);
+
         if (networkAction == null)
         {
           Debug.LogError($"Action of type {actionType} not found! Namespace must be '{{NAME_SPACE}}' and method must be postfixed with '{POST_FIX}'");
@@ -78,7 +78,6 @@ namespace Flow
     public static void Register(FlowAction action)
     {
       string actionName = Regex.Replace(action.GetType().Name, $@"{FlowActionsRegistry.POST_FIX}$", "");
-      Debug.Log(actionName);
       if (actions.TryGetValue(actionName, out FlowAction flowAction)) return;
 
       action.Register(ActionCount, actions);
@@ -128,7 +127,6 @@ namespace Flow
     {
       id = actionID + 1;
       string actionName = Regex.Replace(this.GetType().Name, $@"{FlowActionsRegistry.POST_FIX}$", "");
-      Debug.Log(actionName);
       actions.Add(actionName, this);
     }
 

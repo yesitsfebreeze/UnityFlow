@@ -9,42 +9,42 @@ namespace Networking
 
     private int id;
 
-    public ServerClientUDP(int _id)
+    public ServerClientUDP(int clientID)
     {
-      id = _id;
+      id = clientID;
     }
 
     /// <summary>Initializes the newly connected client's UDP-related info.</summary>
-    /// <param name="_endPoint">The IPEndPoint instance of the newly connected client.</param>
-    public void Connect(IPEndPoint _endPoint)
+    /// <param name="endPoint">The IPEndPoint instance of the newly connected client.</param>
+    public void Connect(IPEndPoint udpEndPoint)
     {
       isConnected = true;
-      endPoint = _endPoint;
+      endPoint = udpEndPoint;
     }
 
     /// <summary>Sends data to the client via UDP.</summary>
-    /// <param name="_packet">The packet to send.</param>
-    public void SendData(Packet _packet)
+    /// <param name="package">The package to send.</param>
+    public void SendData(Package package)
     {
-      ServerUDP.SendData(endPoint, _packet);
+      ServerUDP.SendData(endPoint, package);
     }
 
-    /// <summary>Prepares received data to be used by the appropriate packet handler methods.</summary>
-    /// <param name="_packetData">The packet containing the recieved data.</param>
-    public void HandleData(Packet _packetData)
+    /// <summary>Prepares received data to be used by the appropriate package handler methods.</summary>
+    /// <param name="packageData">The package containing the recieved data.</param>
+    public void HandleData(Package packageData)
     {
-      int _packetLength = _packetData.ReadInt();
-      byte[] _packetBytes = _packetData.ReadBytes(_packetLength);
+      int packageLength = packageData.ReadInt();
+      byte[] packageBytes = packageData.ReadBytes(packageLength);
 
       ThreadManager.ExecuteOnMainThread(() =>
       {
 
-        // Call appropriate method to handle the packet
-        using (Packet _packet = new Packet(_packetBytes))
+        // Call appropriate method to handle the package
+        using (Package package = new Package(packageBytes))
         {
-          int _packetId = _packet.ReadInt();
-          NetworkAction action = Actions.GetByID(_packetId);
-          action.FromClient(id, _packet);
+          int packageId = package.ReadInt();
+          NetworkAction action = Actions.GetByID(packageId);
+          action.FromClient(id, package);
         }
       });
     }

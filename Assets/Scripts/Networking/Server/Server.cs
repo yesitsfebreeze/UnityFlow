@@ -69,65 +69,65 @@ namespace Networking
     #region DataSending
 
     #region DataSending TCP
-    public static void SendTCP(Packet packet, int clientID)
+    public static void SendTCP(Package package, int clientID)
     {
-      Send(Protocol.TCP, packet, clientID);
+      Send(Protocol.TCP, package, clientID);
     }
-    public static void SendTCPAll(Packet packet)
+    public static void SendTCPAll(Package package)
     {
-      SendAll(Protocol.TCP, packet);
+      SendAll(Protocol.TCP, package);
     }
-    public static void SendTCPAllExcept(Packet packet, int[] exceptClientIDs)
+    public static void SendTCPAllExcept(Package package, int[] exceptClientIDs)
     {
-      SendAllExcept(Protocol.TCP, packet, exceptClientIDs);
+      SendAllExcept(Protocol.TCP, package, exceptClientIDs);
     }
     #endregion
 
     #region DataSending UDP
-    public static void SendUDP(Packet packet, int clientID)
+    public static void SendUDP(Package package, int clientID)
     {
-      Send(Protocol.UDP, packet, clientID);
+      Send(Protocol.UDP, package, clientID);
     }
-    public static void SendUDPAll(Packet packet)
+    public static void SendUDPAll(Package package)
     {
-      SendAll(Protocol.UDP, packet);
+      SendAll(Protocol.UDP, package);
     }
-    public static void SendUDPAllExcept(Packet packet, int[] exceptClientIDs)
+    public static void SendUDPAllExcept(Package package, int[] exceptClientIDs)
     {
-      SendAllExcept(Protocol.UDP, packet, exceptClientIDs);
+      SendAllExcept(Protocol.UDP, package, exceptClientIDs);
     }
     #endregion
 
-    public static void Send(Protocol protocol, Packet packet, int clientID)
+    public static void Send(Protocol protocol, Package package, int clientID)
     {
-      packet.WriteLength();
+      package.WriteLength();
       ServerClient client = Server.clients[clientID];
-      SendData(protocol, packet, client);
+      SendData(protocol, package, client);
     }
 
-    public static void SendAll(Protocol protocol, Packet packet)
+    public static void SendAll(Protocol protocol, Package package)
     {
       print("test");
       IterateClients((ServerClient client) =>
       {
         print(client.id);
-        SendData(protocol, packet, client);
+        SendData(protocol, package, client);
       });
     }
 
-    public static void SendAllExcept(Protocol protocol, Packet packet, int[] exceptClientIDs)
+    public static void SendAllExcept(Protocol protocol, Package package, int[] exceptClientIDs)
     {
       // except ids
       IterateClients((ServerClient client) =>
       {
-        SendData(protocol, packet, client);
+        SendData(protocol, package, client);
       });
     }
 
-    private static void SendData(Protocol protocol, Packet packet, ServerClient client)
+    private static void SendData(Protocol protocol, Package package, ServerClient client)
     {
-      if (protocol == Protocol.TCP) client.tcp.SendData(packet);
-      if (protocol == Protocol.UDP) client.udp.SendData(packet);
+      if (protocol == Protocol.TCP) client.tcp.SendData(package);
+      if (protocol == Protocol.UDP) client.udp.SendData(package);
     }
 
 

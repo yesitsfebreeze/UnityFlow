@@ -27,45 +27,45 @@ namespace Networking
       socket.Connect(endPoint);
       socket.BeginReceive(ReceiveCallback, null);
 
-      using (Packet _packet = new Packet())
+      using (Package package = new Package())
       {
-        SendData(_packet);
+        SendData(package);
       }
     }
 
     /// <summary>Sends data to the client via UDP.</summary>
-    /// <param name="_packet">The packet to send.</param>
-    public void SendData(Packet _packet)
+    /// <param name="package">The package to send.</param>
+    public void SendData(Package package)
     {
       try
       {
-        _packet.InsertInt(client.id); // Insert the client's ID at the start of the packet
+        package.InsertInt(client.id); // Insert the client's ID at the start of the package
         if (socket != null)
         {
-          socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
+          socket.BeginSend(package.ToArray(), package.Length(), null, null);
         }
       }
-      catch (Exception _ex)
+      catch (Exception ex)
       {
-        Debug.Log($"Error sending data to server via UDP: {_ex}");
+        Debug.Log($"Error sending data to server via UDP: {ex}");
       }
     }
 
     /// <summary>Receives incoming UDP data.</summary>
-    private void ReceiveCallback(IAsyncResult _result)
+    private void ReceiveCallback(IAsyncResult result)
     {
       try
       {
-        byte[] _data = socket.EndReceive(_result, ref endPoint);
+        byte[] data = socket.EndReceive(result, ref endPoint);
         socket.BeginReceive(ReceiveCallback, null);
 
-        if (_data.Length < 4)
+        if (data.Length < 4)
         {
           client.Disconnect();
           return;
         }
 
-        HandleData(_data);
+        HandleData(data);
       }
       catch
       {
@@ -73,23 +73,23 @@ namespace Networking
       }
     }
 
-    /// <summary>Prepares received data to be used by the appropriate packet handler methods.</summary>
-    /// <param name="_data">The recieved data.</param>
-    private void HandleData(byte[] _data)
+    /// <summary>Prepares received data to be used by the appropriate package handler methods.</summary>
+    /// <param name="data">The recieved data.</param>
+    private void HandleData(byte[] data)
     {
-      using (Packet _packet = new Packet(_data))
+      using (Package package = new Package(data))
       {
-        int _packetLength = _packet.ReadInt();
-        _data = _packet.ReadBytes(_packetLength);
+        int packageLength = package.ReadInt();
+        data = package.ReadBytes(packageLength);
       }
 
       ThreadManager.ExecuteOnMainThread(() =>
       {
-        using (Packet _packet = new Packet(_data))
+        using (Package package = new Package(data))
         {
-          int _packetId = _packet.ReadInt();
-          NetworkAction action = Actions.GetByID(_packetId);
-          action.FromServer(_packet);
+          int packageId = package.ReadInt();
+          NetworkAction action = Actions.GetByID(packageId);
+          action.FromServer(package);
         }
       });
     }

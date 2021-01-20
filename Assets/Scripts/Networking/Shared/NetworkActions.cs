@@ -85,8 +85,8 @@ namespace Networking
     public int id;
     public static SO_NetworkSettings settings;
 
-    public delegate void FromClientHandler(int clientID, Packet packet);
-    public delegate void FromServerHandler(Packet packet);
+    public delegate void FromClientHandler(int clientID, Package package);
+    public delegate void FromServerHandler(Package package);
 
 
     public int GetID()
@@ -110,12 +110,12 @@ namespace Networking
       actions.Add(this.GetType().Name.Replace("Action", ""), this);
     }
 
-    virtual public void FromClient(int clientID, Packet packet)
+    virtual public void FromClient(int clientID, Package package)
     {
       Debug.Log("not implemented");
     }
 
-    virtual public void FromServer(Packet packet)
+    virtual public void FromServer(Package package)
     {
       Debug.Log("not implemented");
     }

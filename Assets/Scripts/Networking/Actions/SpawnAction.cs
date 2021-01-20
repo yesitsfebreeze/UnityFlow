@@ -6,16 +6,16 @@ namespace Networking
   public class SpawnAction : NetworkAction
   {
 
-    override public void FromClient(int clientID, Packet packet)
+    override public void FromClient(int clientID, Package package)
     {
 
     }
 
-    override public void FromServer(Packet packet)
+    override public void FromServer(Package package)
     {
-      int clientID = packet.ReadInt();
-      Vector3 position = packet.ReadVector3();
-      Quaternion rotation = packet.ReadQuaternion();
+      int clientID = package.ReadInt();
+      Vector3 position = package.ReadVector3();
+      Quaternion rotation = package.ReadQuaternion();
 
       if (LocalClient.instance.id == clientID)
       {
@@ -43,13 +43,13 @@ namespace Networking
       Instantiate(settings.SERVER_PLAYER_PREFAB, position, rotation);
 
       // create player for local client
-      using (Packet packet = new Packet(GetID()))
+      using (Package package = new Package(GetID()))
       {
-        packet.Write(clientID);
-        packet.Write(position);
-        packet.Write(rotation);
+        package.Write(clientID);
+        package.Write(position);
+        package.Write(rotation);
 
-        Server.SendTCPAll(packet);
+        Server.SendTCPAll(package);
       }
 
 
@@ -58,13 +58,13 @@ namespace Networking
       // {
       //   // if (client.id != clientID)
       //   // {
-      //   using (Packet packet = new Packet(GetID()))
+      //   using (Packet package = new Packet(GetID()))
       //   {
-      //     packet.Write(clientID);
-      //     packet.Write(position);
-      //     packet.Write(rotation);
+      //     package.Write(clientID);
+      //     package.Write(position);
+      //     package.Write(rotation);
 
-      //     Server.SendTCP(packet, client.id);
+      //     Server.SendTCP(package, client.id);
       //   }
       //   // }
       // });

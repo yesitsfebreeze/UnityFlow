@@ -8,14 +8,36 @@ using System.IO;
 public static class BuildMultiplayer
 {
 
-  [MenuItem("File/BuildMultiplayer")]
 
-  static void PerformMultyPlayerBuild()
+  [MenuItem("Networking/BuildMultiplayer (Server Only) %F1")]
+  static void PerformMultyPlayerBuildServer()
   {
+    StartBuild(0);
+  }
 
+  [MenuItem("Networking/BuildMultiplayer (1 Player) %F2")]
+  static void PerformMultyPlayerBuildOne()
+  {
+    StartBuild(1);
+  }
+
+  [MenuItem("Networking/BuildMultiplayer (2 Players) %F3")]
+  static void PerformMultyPlayerBuildTwo()
+  {
+    StartBuild(2);
+  }
+
+  [MenuItem("Networking/BuildMultiplayer (4 Players) %F4")]
+  static void PerformMultyPlayerBuildFour()
+  {
+    StartBuild(4);
+  }
+
+
+
+  private static void StartBuild(int playerCount)
+  {
     BuildTarget target = BuildTarget.StandaloneWindows64;
-
-    int playerCount = 0;
 
     EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Standalone, target);
 
@@ -30,7 +52,6 @@ public static class BuildMultiplayer
 
     for (int i = 1; i <= playerCount; i++)
     {
-
       string client = GetScenePath("Client");
       BuildPlayerOptions clientOptions = new BuildPlayerOptions();
       clientOptions.scenes = new[] { client };
@@ -40,7 +61,6 @@ public static class BuildMultiplayer
 
       BuildPipeline.BuildPlayer(clientOptions);
     }
-
   }
 
   static string GetProjectName()

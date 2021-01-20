@@ -33,36 +33,36 @@ namespace Networking
     }
 
 
-    public static void SendData(IPEndPoint _clientEndPoint, Packet _packet)
+    public static void SendData(IPEndPoint clientEndPoint, Package package)
     {
       try
       {
-        if (_clientEndPoint != null)
+        if (clientEndPoint != null)
         {
-          listener.BeginSend(_packet.ToArray(), _packet.Length(), _clientEndPoint, null, null);
+          listener.BeginSend(package.ToArray(), package.Length(), clientEndPoint, null, null);
         }
       }
-      catch (Exception _ex)
+      catch (Exception ex)
       {
-        Debug.Log($"Error sending data to {_clientEndPoint} via UDP: {_ex}");
+        Debug.Log($"Error sending data to {clientEndPoint} via UDP: {ex}");
       }
     }
 
-    private static void ReceiveCallback(IAsyncResult _result)
+    private static void ReceiveCallback(IAsyncResult result)
     {
       try
       {
         if (isStopped) return;
 
         IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 0);
-        byte[] _data = listener.EndReceive(_result, ref endPoint);
+        byte[] _data = listener.EndReceive(result, ref endPoint);
         listener.BeginReceive(ReceiveCallback, null);
 
         if (_data.Length < 4) return;
 
-        using (Packet _packet = new Packet(_data))
+        using (Package package = new Package(_data))
         {
-          int clientID = _packet.ReadInt();
+          int clientID = package.ReadInt();
           if (clientID == 0) return;
           ServerClient client = Server.clients[clientID];
 
@@ -75,13 +75,13 @@ namespace Networking
           if (client.udp.endPoint.ToString() == endPoint.ToString())
           {
             // Ensures that the client is not being impersonated by another by sending a false clientID
-            client.udp.HandleData(_packet);
+            client.udp.HandleData(package);
           }
         }
       }
-      catch (Exception _ex)
+      catch (Exception ex)
       {
-        Debug.Log($"Error receiving UDP data: {_ex}");
+        Debug.Log($"Error receiving UDP data: {ex}");
       }
     }
   }

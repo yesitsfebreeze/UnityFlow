@@ -11,32 +11,30 @@ namespace Networking
 
     private readonly int id;
     private NetworkStream stream;
-    private Packet receivedData;
+    private Package receivedPackage;
     private byte[] receiveBuffer;
 
-    public ServerClientTCP(int _id)
+    public ServerClientTCP(int clientID)
     {
-      id = _id;
+      id = clientID;
     }
 
     /// <summary>Initializes the newly connected client's TCP-related info.</summary>
-    /// <param name="_socket">The TcpClient instance of the newly connected client.</param>
-    public void Connect(TcpClient _socket)
+    /// <param name="socket">The TcpClient instance of the newly connected client.</param>
+    public void Connect(TcpClient tcpSocket)
     {
       try
       {
-        socket = _socket;
+        socket = tcpSocket;
         socket.ReceiveBufferSize = Server.settings.DATA_BUFFER_SIZE;
         socket.SendBufferSize = Server.settings.DATA_BUFFER_SIZE;
 
         stream = socket.GetStream();
 
-        receivedData = new Packet();
+        receivedPackage = new Package();
         receiveBuffer = new byte[Server.settings.DATA_BUFFER_SIZE];
 
         stream.BeginRead(receiveBuffer, 0, Server.settings.DATA_BUFFER_SIZE, ReceiveCallback, null);
-
-
 
         ConnectAction action = Actions.Get("Connect") as ConnectAction;
         action.ToClient(id, "Successfully connected to the server");
@@ -49,15 +47,13 @@ namespace Networking
     }
 
     /// <summary>Sends data to the client via TCP.</summary>
-    /// <param name="_packet">The packet to send.</param>
-    public void SendData(Packet _packet)
+    /// <param name="package">The package to send.</param>
+    public void SendData(Package package)
     {
       try
       {
-        if (socket != null)
-        {
-          stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null); // Send data to appropriate client
-        }
+        if (socket == null) return;
+        stream.BeginWrite(package.ToArray(), 0, package.Length(), null, null);
       }
       catch (Exception ex)
       {
@@ -66,21 +62,21 @@ namespace Networking
     }
 
     /// <summary>Reads incoming data from the stream.</summary>
-    private void ReceiveCallback(IAsyncResult _result)
+    private void ReceiveCallback(IAsyncResult result)
     {
       try
       {
-        int _byteLength = stream.EndRead(_result);
-        if (_byteLength <= 0)
+        int byteLength = stream.EndRead(result);
+        if (byteLength <= 0)
         {
           Server.clients[id].Disconnect();
           return;
         }
 
-        byte[] _data = new byte[_byteLength];
-        Array.Copy(receiveBuffer, _data, _byteLength);
+        byte[] data = new byte[byteLength];
+        Array.Copy(receiveBuffer, data, byteLength);
 
-        receivedData.Reset(HandleData(_data)); // Reset receivedData if all data was handled
+        receivedPackage.Reset(HandleData(data)); // Reset receivedPackage if all data was handled
         stream.BeginRead(receiveBuffer, 0, Server.settings.DATA_BUFFER_SIZE, ReceiveCallback, null);
       }
       catch (Exception ex)
@@ -90,58 +86,51 @@ namespace Networking
       }
     }
 
-    /// <summary>Prepares received data to be used by the appropriate packet handler methods.</summary>
-    /// <param name="_data">The recieved data.</param>
-    private bool HandleData(byte[] _data)
+    /// <summary>Prepares received data to be used by the appropriate package handler methods.</summary>
+    /// <param name="data">The recieved data.</param>
+    private bool HandleData(byte[] data)
     {
-      int _packetLength = 0;
+      receivedPackage.SetBytes(data);
 
-      receivedData.SetBytes(_data);
+      int packageLength = 0;
+      if (CheckPackageLength(ref packageLength)) return true;
 
-      if (receivedData.UnreadLength() >= 4)
+      while (packageLength > 0 && packageLength <= receivedPackage.UnreadLength())
       {
-        // If client's received data contains a packet
-        _packetLength = receivedData.ReadInt();
-        if (_packetLength <= 0)
+        HandlePackage(packageLength);
+        if (CheckPackageLength(ref packageLength)) return true;
+      }
+
+      if (packageLength <= 1) return true;
+
+      return false;
+    }
+
+
+    private void HandlePackage(int packageLength)
+    {
+      // While package contains data AND package data length doesn't exceed the length of the package we're reading
+      byte[] packageBytes = receivedPackage.ReadBytes(packageLength);
+      ThreadManager.ExecuteOnMainThread(() =>
+      {
+        // get package from server
+        using (Package package = new Package(packageBytes))
         {
-          // If packet contains no data
-          return true; // Reset receivedData instance to allow it to be reused
+          int packageId = package.ReadInt();
+          NetworkAction action = Actions.GetByID(packageId);
+          action.FromClient(id, package);
         }
-      }
+      });
+    }
 
-      while (_packetLength > 0 && _packetLength <= receivedData.UnreadLength())
+    private bool CheckPackageLength(ref int packageLength)
+    {
+      packageLength = 0;
+      if (receivedPackage.UnreadLength() >= 4)
       {
-        // While packet contains data AND packet data length doesn't exceed the length of the packet we're reading
-        byte[] _packetBytes = receivedData.ReadBytes(_packetLength);
-        ThreadManager.ExecuteOnMainThread(() =>
-        {
-          using (Packet _packet = new Packet(_packetBytes))
-          {
-            // Call appropriate method to handle the packet
-            int _packetId = _packet.ReadInt();
-            NetworkAction action = Actions.GetByID(_packetId);
-            action.FromClient(id, _packet);
-          }
-        });
-
-        _packetLength = 0; // Reset packet length
-        if (receivedData.UnreadLength() >= 4)
-        {
-          // If client's received data contains another packet
-          _packetLength = receivedData.ReadInt();
-          if (_packetLength <= 0)
-          {
-            // If packet contains no data
-            return true; // Reset receivedData instance to allow it to be reused
-          }
-        }
+        packageLength = receivedPackage.ReadInt();
+        if (packageLength <= 0) return true;
       }
-
-      if (_packetLength <= 1)
-      {
-        return true; // Reset receivedData instance to allow it to be reused
-      }
-
       return false;
     }
 
@@ -150,7 +139,7 @@ namespace Networking
     {
       socket.Close();
       stream = null;
-      receivedData = null;
+      receivedPackage = null;
       receiveBuffer = null;
       socket = null;
     }

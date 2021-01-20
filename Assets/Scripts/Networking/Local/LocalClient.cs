@@ -92,25 +92,25 @@ namespace Networking
 
 
     #region DataSending
-    public static void Send(Protocol protocol, Packet packet)
+    public static void Send(Protocol protocol, Package package)
     {
-      packet.WriteLength();
-      if (protocol == Protocol.TCP) instance.tcp.SendData(packet);
-      if (protocol == Protocol.UDP) instance.udp.SendData(packet);
+      package.WriteLength();
+      if (protocol == Protocol.TCP) instance.tcp.SendData(package);
+      if (protocol == Protocol.UDP) instance.udp.SendData(package);
     }
 
-    /// <summary>Sends a packet to the server via TCP.</summary>
-    /// <param name="_packet">The packet to send to the sever.</param>
-    public static void SendTCPData(Packet packet)
+    /// <summary>Sends a package to the server via TCP.</summary>
+    /// <param name="package">The package to send to the sever.</param>
+    public static void SendTCPData(Package package)
     {
-      Send(Protocol.TCP, packet);
+      Send(Protocol.TCP, package);
     }
 
-    /// <summary>Sends a packet to the server via UDP.</summary>
-    /// <param name="_packet">The packet to send to the sever.</param>
-    public static void SendUDPData(Packet packet)
+    /// <summary>Sends a package to the server via UDP.</summary>
+    /// <param name="package">The package to send to the sever.</param>
+    public static void SendUDPData(Package package)
     {
-      Send(Protocol.UDP, packet);
+      Send(Protocol.UDP, package);
     }
     #endregion
 

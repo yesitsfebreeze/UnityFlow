@@ -6,15 +6,15 @@ namespace Networking
   public class DisconnectAction : NetworkAction
   {
 
-    override public void FromClient(int clientID, Packet packet)
+    override public void FromClient(int clientID, Package package)
     {
-      int _clientIDCheck = packet.ReadInt();
-      string _username = packet.ReadString();
+      int clientIDCheck = package.ReadInt();
+      string username = package.ReadString();
 
 
-      if (clientID != _clientIDCheck)
+      if (clientID != clientIDCheck)
       {
-        Debug.Log($"Client {clientID} tried to connect as client {_clientIDCheck}. That is wrong!");
+        Debug.Log($"Client {clientID} tried to connect as client {clientIDCheck}. That is wrong!");
         return;
 
       }
@@ -27,11 +27,11 @@ namespace Networking
 
     public void ToServer(int clientID, string username)
     {
-      using (Packet packet = new Packet(GetID()))
+      using (Package package = new Package(GetID()))
       {
-        packet.Write(clientID);
-        packet.Write(username);
-        LocalClient.SendTCPData(packet);
+        package.Write(clientID);
+        package.Write(username);
+        LocalClient.SendTCPData(package);
       }
     }
 
@@ -41,19 +41,19 @@ namespace Networking
 
       print(clientID);
       print(msg);
-      using (Packet packet = new Packet(GetID()))
+      using (Package package = new Package(GetID()))
       {
-        packet.Write(clientID);
-        packet.Write(msg);
+        package.Write(clientID);
+        package.Write(msg);
 
-        Server.SendTCP(packet, clientID);
+        Server.SendTCP(package, clientID);
       }
     }
 
-    override public void FromServer(Packet packet)
+    override public void FromServer(Package package)
     {
-      int clientID = packet.ReadInt();
-      string msg = packet.ReadString();
+      int clientID = package.ReadInt();
+      string msg = package.ReadString();
       LocalClient.instance.id = clientID;
 
       ToServer(LocalClient.instance.id, "febreeze");

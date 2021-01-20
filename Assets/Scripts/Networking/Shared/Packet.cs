@@ -11,7 +11,9 @@ namespace Networking
   {
     private List<byte> buffer;
     private byte[] readableBuffer;
-    private int readPos;
+
+    // todo reset back to priv
+    public int readPos;
 
     /// <summary>Creates a new empty packet (without an ID).</summary>
     public Packet()

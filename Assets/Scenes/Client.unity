@@ -701,10 +701,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2115069565}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 300a51b2f3ec5a9419871c46996a7274, type: 3}
+  m_Script: {fileID: 11500000, guid: fcac8f173ad87a54aa8fd2214891971d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   NetworkSettings: {fileID: 11400000, guid: e59a1422e49202540806175f24728721, type: 2}
-  localClientID: 0
+  id: 0
   ip: 
   port: 0

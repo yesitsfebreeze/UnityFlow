@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Networking
 {
 
-  public class ConnectAction : NetworkAction
+  public class DisconnectAction : NetworkAction
   {
 
     override public void FromClient(int clientID, Packet packet)
@@ -38,6 +38,9 @@ namespace Networking
 
     public void ToClient(int clientID, string msg)
     {
+
+      print(clientID);
+      print(msg);
       using (Packet packet = new Packet(GetID()))
       {
         packet.Write(clientID);
@@ -52,10 +55,6 @@ namespace Networking
       int clientID = packet.ReadInt();
       string msg = packet.ReadString();
       LocalClient.instance.id = clientID;
-
-      Debug.Log(msg);
-
-
 
       ToServer(LocalClient.instance.id, "febreeze");
     }

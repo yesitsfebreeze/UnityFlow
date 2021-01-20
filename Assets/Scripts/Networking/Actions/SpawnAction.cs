@@ -17,23 +17,15 @@ namespace Networking
       Vector3 position = packet.ReadVector3();
       Quaternion rotation = packet.ReadQuaternion();
 
-      print("--- ids");
-      print(clientID);
-      print(LocalClient.instance.localClientID);
-      print("---");
-
-      if (LocalClient.instance.localClientID == clientID)
+      if (LocalClient.instance.id == clientID)
       {
         Instantiate(settings.PLAYER_PREFAB, position, rotation);
       }
       else
       {
-        print(clientID);
-
         print("spawn enemy");
         Instantiate(settings.ENEMY_PREFAB, position + new Vector3(3f, 0, 3f), rotation);
       }
-
 
     }
 
@@ -46,21 +38,37 @@ namespace Networking
 
     public void ToClient(int clientID, Vector3 position, Quaternion rotation)
     {
+
+      // create at server
       Instantiate(settings.SERVER_PLAYER_PREFAB, position, rotation);
 
+      // create player for local client
       using (Packet packet = new Packet(GetID()))
       {
-        Debug.Log(clientID);
-
         packet.Write(clientID);
         packet.Write(position);
         packet.Write(rotation);
 
-        GameServer.SendTCPData(packet, clientID);
-        GameServer.SendTCPData(packet, 1);
-
-        // GameServer.SendTCPDataToAllExcept(packet, new int[] { clientID });
+        Server.SendTCPAll(packet);
       }
+
+
+      // // create enemy for other local clients
+      // Server.IterateClients((ServerClient client) =>
+      // {
+      //   // if (client.id != clientID)
+      //   // {
+      //   using (Packet packet = new Packet(GetID()))
+      //   {
+      //     packet.Write(clientID);
+      //     packet.Write(position);
+      //     packet.Write(rotation);
+
+      //     Server.SendTCP(packet, client.id);
+      //   }
+      //   // }
+      // });
+
     }
   }
 }

@@ -13,14 +13,16 @@ public static class BuildMultiplayer
   static void PerformMultyPlayerBuild()
   {
 
-    int playerCount = 2;
+    BuildTarget target = BuildTarget.StandaloneWindows64;
 
-    EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows);
+    int playerCount = 0;
+
+    EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Standalone, target);
 
     string server = GetScenePath("Server");
     BuildPlayerOptions serverOptions = new BuildPlayerOptions();
     serverOptions.scenes = new[] { server };
-    serverOptions.target = BuildTarget.StandaloneWindows64;
+    serverOptions.target = target;
     serverOptions.locationPathName = "build/Win64/server/server.exe";
     serverOptions.options = BuildOptions.EnableHeadlessMode | BuildOptions.AutoRunPlayer;
 
@@ -32,7 +34,7 @@ public static class BuildMultiplayer
       string client = GetScenePath("Client");
       BuildPlayerOptions clientOptions = new BuildPlayerOptions();
       clientOptions.scenes = new[] { client };
-      clientOptions.target = BuildTarget.StandaloneWindows64;
+      clientOptions.target = target;
       clientOptions.locationPathName = "build/Win64/client" + i.ToString() + "/client.exe";
       clientOptions.options = BuildOptions.AutoRunPlayer;
 

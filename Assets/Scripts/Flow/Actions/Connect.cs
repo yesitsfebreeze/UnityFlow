@@ -35,7 +35,6 @@ namespace FlowActions
       }
     }
 
-
     public void ToClient(int clientID, string msg)
     {
       using (FlowPackage package = new FlowPackage(GetID()))
@@ -49,9 +48,6 @@ namespace FlowActions
 
     override public void FromServer(FlowPackage package)
     {
-
-      Debug.Log("package received");
-
       int clientID = package.ReadInt();
       string msg = package.ReadString();
       LocalClient.instance.id = clientID;

@@ -48,9 +48,6 @@ namespace Flow
       if (!socket.Connected) return;
 
 
-      IPEndPoint enpoint = (IPEndPoint)socket.Client.LocalEndPoint;
-      OnConnectedCallback(enpoint.Port);
-
       stream = socket.GetStream();
       receivedPackage = new FlowPackage();
       stream.BeginRead(receiveBuffer, 0, settings.DATA_BUFFER_SIZE, ReceiveCallback, null);
@@ -97,6 +94,14 @@ namespace Flow
         Array.Copy(receiveBuffer, data, byteLength);
 
         receivedPackage.Reset(HandleData(data)); // Reset receivedPackage if all data was handled
+
+        // connect udp client with the updated client id
+        if (!client.udp.isConnected && client.id != 0)
+        {
+          IPEndPoint enpoint = (IPEndPoint)socket.Client.LocalEndPoint;
+          OnConnectedCallback(enpoint.Port);
+        }
+
         stream.BeginRead(receiveBuffer, 0, settings.DATA_BUFFER_SIZE, ReceiveCallback, null);
       }
       catch

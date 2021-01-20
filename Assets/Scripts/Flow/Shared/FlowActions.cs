@@ -74,7 +74,7 @@ namespace Flow
 
     public static void Register(FlowAction action)
     {
-      string actionName = Regex.Replace(action.GetType().Name, @"Flow$", "") + "Flow";
+      string actionName = Regex.Replace(action.GetType().Name, @"Flow$", "");
       if (actions.TryGetValue(actionName, out FlowAction flowAction)) return;
 
       action.Register(ActionCount, actions);
@@ -123,7 +123,7 @@ namespace Flow
     public void Register(int actionID, Dictionary<string, FlowAction> actions)
     {
       id = actionID + 1;
-      string actionName = Regex.Replace(this.GetType().Name, @"Flow$", "") + "Flow";
+      string actionName = Regex.Replace(this.GetType().Name, @"Flow$", "");
       actions.Add(actionName, this);
     }
 

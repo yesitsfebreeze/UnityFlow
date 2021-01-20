@@ -61,9 +61,9 @@ namespace Flow
 
     public static void IterateClients(ClientIteration Callback)
     {
-      foreach (KeyValuePair<int, ServerClient> clientI in clients)
+      foreach (KeyValuePair<int, ServerClient> serverClientPair in clients)
       {
-        ServerClient client = clientI.Value;
+        ServerClient client = serverClientPair.Value;
         if (client.IsConnected()) Callback(client);
       }
     }

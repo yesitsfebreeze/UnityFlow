@@ -42,33 +42,34 @@ namespace FlowActions
       // create at server
       Instantiate(settings.SERVER_PLAYER_PREFAB, position, rotation);
 
-      // create player for local client
       using (FlowPackage package = new FlowPackage(GetID()))
       {
         package.Write(clientID);
         package.Write(position);
         package.Write(rotation);
 
+        // create player for passed client
         Server.TCPSend(package, clientID);
-        // Server.SendTCPAll(package);
+
+        // create enemy for other clients
+        Server.TCPSendAllExcept(package, new int[] { clientID });
       }
 
+      // create enemies for passed clientID
+      Server.IterateClients((ServerClient client) =>
+      {
+        if (client.id != clientID)
+        {
+          using (FlowPackage package = new FlowPackage(GetID()))
+          {
+            package.Write(client.id);
+            package.Write(position);
+            package.Write(rotation);
 
-      // // create enemy for other local clients
-      // Server.IterateClients((ServerClient client) =>
-      // {
-      //   // if (client.id != clientID)
-      //   // {
-      //   using (FlowPackage package = new FlowPackage(GetID()))
-      //   {
-      //     package.Write(clientID);
-      //     package.Write(position);
-      //     package.Write(rotation);
-
-      //     Server.SendTCP(package, client.id);
-      //   }
-      //   // }
-      // });
+            Server.TCPSend(package, clientID);
+          }
+        }
+      });
 
     }
   }

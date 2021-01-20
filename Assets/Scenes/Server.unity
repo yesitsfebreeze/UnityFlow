@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2c3a3f2661fb9c4c8a19b504c84c306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NetworkSettings: {fileID: 11400000, guid: c640178cea4f0ad45aeb7a3116877dd0, type: 2}
+  FlowSettings: {fileID: 11400000, guid: 271af5e86ca9d514e894b47e04e402b0, type: 2}
 --- !u!4 &1362744330
 Transform:
   m_ObjectHideFlags: 0

@@ -21,13 +21,11 @@ namespace Flow
 
     public bool IsConnected()
     {
-      Debug.Log("udp:" + udp.isConnected);
-      Debug.Log("tcp:" + tcp.isConnected);
-
       if (udp.isConnected && tcp.isConnected)
       {
         wasConnected = true;
         isConnected = true;
+        return isConnected;
       }
 
       isConnected = false;

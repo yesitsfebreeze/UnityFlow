@@ -57,6 +57,7 @@ namespace Flow
       try
       {
         byte[] data = socket.EndReceive(result, ref endPoint);
+        Debug.Log(data);
         socket.BeginReceive(ReceiveCallback, null);
 
         if (data.Length < 4)

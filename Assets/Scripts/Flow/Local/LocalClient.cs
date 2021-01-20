@@ -71,7 +71,7 @@ namespace Flow
       tcp.Connect();
       tcp.SetOnConnectedCallback((int Port) =>
       {
-        if (!udp.isConnected) udp.Connect(Port);
+        udp.Connect(Port);
       });
     }
 
@@ -101,9 +101,6 @@ namespace Flow
 
     public bool IsConnected()
     {
-      Debug.Log("udp:" + udp.isConnected);
-      Debug.Log("tcp:" + tcp.isConnected);
-
       if (udp.isConnected && tcp.isConnected)
       {
         wasConnected = true;

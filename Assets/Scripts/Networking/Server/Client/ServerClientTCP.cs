@@ -1,6 +1,7 @@
 using System;
 using System.Net.Sockets;
 using UnityEngine;
+using NetworkingActions;
 
 namespace Networking
 {
@@ -36,7 +37,7 @@ namespace Networking
 
         stream.BeginRead(receiveBuffer, 0, Server.settings.DATA_BUFFER_SIZE, ReceiveCallback, null);
 
-        ConnectAction action = Actions.Get("Connect") as ConnectAction;
+        NA_Connect action = Actions.Get("Connect") as NA_Connect;
         action.ToClient(id, "Successfully connected to the server");
         isConnected = true;
       }

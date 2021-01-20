@@ -1,6 +1,7 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
-
+using NetworkingActions;
 
 namespace Networking
 {
@@ -13,8 +14,20 @@ namespace Networking
 
     void RegisterActions()
     {
-      gameObject.AddComponent<ConnectAction>();
-      gameObject.AddComponent<SpawnAction>();
+      foreach (string action in settings.actions)
+      {
+        string actionType = "NetworkingActions.NA_" + action;
+        Type networkAction = Type.GetType(actionType);
+        if (networkAction == null)
+        {
+          Debug.LogError($"Action of type {actionType} not found! Check the Namespace and the 'NA_' prefix");
+        }
+        else
+        {
+          gameObject.AddComponent(networkAction);
+        }
+
+      }
     }
 
     private void Awake()
@@ -59,7 +72,7 @@ namespace Networking
 
     public static void Register(NetworkAction action)
     {
-      if (actions.TryGetValue(action.GetType().Name.Replace("Action", ""), out NetworkAction nwAction)) return;
+      if (actions.TryGetValue(action.GetType().Name.Replace("NA_", ""), out NetworkAction nwAction)) return;
 
       action.Register(ActionCount, actions);
       actionsByID.Add(ActionCount, action);

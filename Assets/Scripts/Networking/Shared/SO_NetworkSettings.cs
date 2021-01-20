@@ -16,5 +16,11 @@ public class SO_NetworkSettings : ScriptableObject
   public GameObject ENEMY_PREFAB;
   public GameObject SERVER_PLAYER_PREFAB;
 
+  public string[] actions = new string[] {
+    "Connect",
+    "Disconnect",
+    "Spawn",
+  };
+
 }
 

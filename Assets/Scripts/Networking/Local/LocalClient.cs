@@ -8,6 +8,7 @@ namespace Networking
     public static LocalClient instance;
     public SO_NetworkSettings NetworkSettings;
     public static SO_NetworkSettings settings;
+    public bool wasConnected = false;
 
     public int id = 0;
     public string ip;
@@ -39,6 +40,10 @@ namespace Networking
     private void Start()
     {
       settings = NetworkSettings;
+      ThreadManager threadManager = gameObject.AddComponent<ThreadManager>();
+      threadManager.isClient = true;
+      NetworkActions actions = gameObject.AddComponent<NetworkActions>();
+      actions.NetworkSettings = settings;
 
       if (settings.DEVELOPMENT_MODE)
       {
@@ -63,7 +68,11 @@ namespace Networking
       udp = new LocalClientUDP();
 
       isConnected = true;
-      tcp.Connect(); // Connect tcp, udp gets connected once tcp is done
+      tcp.Connect();
+      tcp.SetOnConnectedCallback((int Port) =>
+      {
+        if (!udp.isConnected) udp.Connect(Port);
+      });
     }
 
     /// <summary>Disconnects from the server and stops all network traffic.</summary>
@@ -72,7 +81,7 @@ namespace Networking
       if (isConnected)
       {
         isConnected = false;
-        bool wasConnected = false;
+        wasConnected = false;
         if (tcp != null && tcp.socket != null)
         {
           wasConnected = true;
@@ -90,6 +99,21 @@ namespace Networking
       }
     }
 
+    public bool IsConnected()
+    {
+      Debug.Log("udp:" + udp.isConnected);
+      Debug.Log("tcp:" + tcp.isConnected);
+
+      if (udp.isConnected && tcp.isConnected)
+      {
+        wasConnected = true;
+        isConnected = true;
+      }
+
+      isConnected = false;
+      return isConnected;
+    }
+
 
     #region DataSending
     public static void Send(Protocol protocol, Package package)
@@ -101,14 +125,14 @@ namespace Networking
 
     /// <summary>Sends a package to the server via TCP.</summary>
     /// <param name="package">The package to send to the sever.</param>
-    public static void SendTCPData(Package package)
+    public static void TCPSend(Package package)
     {
       Send(Protocol.TCP, package);
     }
 
     /// <summary>Sends a package to the server via UDP.</summary>
     /// <param name="package">The package to send to the sever.</param>
-    public static void SendUDPData(Package package)
+    public static void UDPSend(Package package)
     {
       Send(Protocol.UDP, package);
     }

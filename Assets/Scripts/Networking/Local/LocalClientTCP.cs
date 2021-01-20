@@ -8,13 +8,16 @@ namespace Networking
 {
   public class LocalClientTCP
   {
+    public bool isConnected = false;
     public TcpClient socket;
+    public delegate void OnConnectedCallbackDelegate(int port);
 
     private NetworkStream stream;
     private Package receivedPacket;
     private byte[] receiveBuffer;
     private SO_NetworkSettings settings;
     private LocalClient client;
+    private OnConnectedCallbackDelegate OnConnectedCallback;
 
 
     public LocalClientTCP()
@@ -44,19 +47,22 @@ namespace Networking
 
       if (!socket.Connected) return;
 
-      if (!client.udp.isConnected)
-      {
-        IPEndPoint enpoint = (IPEndPoint)socket.Client.LocalEndPoint;
-        client.udp.Connect(enpoint.Port);
-        return;
-      }
+
+      IPEndPoint enpoint = (IPEndPoint)socket.Client.LocalEndPoint;
+      OnConnectedCallback(enpoint.Port);
 
       stream = socket.GetStream();
-
       receivedPacket = new Package();
-
       stream.BeginRead(receiveBuffer, 0, settings.DATA_BUFFER_SIZE, ReceiveCallback, null);
+
+      isConnected = true;
     }
+
+    public void SetOnConnectedCallback(OnConnectedCallbackDelegate callback)
+    {
+      OnConnectedCallback = callback;
+    }
+
 
     /// <summary>Sends data to the client via TCP.</summary>
     /// <param name="package">The package to send.</param>
@@ -157,6 +163,8 @@ namespace Networking
       receivedPacket = null;
       receiveBuffer = null;
       socket = null;
+
+      isConnected = false;
     }
 
   }

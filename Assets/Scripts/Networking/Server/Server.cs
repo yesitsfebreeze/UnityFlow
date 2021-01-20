@@ -24,6 +24,9 @@ namespace Networking
     void Start()
     {
       settings = NetworkSettings;
+      gameObject.AddComponent<ThreadManager>();
+      NetworkActions actions = gameObject.AddComponent<NetworkActions>();
+      actions.NetworkSettings = settings;
 
       // setup unity to run efficently on headless mode
       Time.fixedDeltaTime = 1f / settings.TICK_RATE;
@@ -65,36 +68,67 @@ namespace Networking
       }
     }
 
+    public static bool IsHeadlessMode()
+    {
+#if UNITY_EDITOR
+      return true;
+#else
+      return UnityEngine.SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null;
+#endif
+    }
+
+    public static bool IntInArray(Array list, int value)
+    {
+      bool contains = false;
+      foreach (int n in list) // go over every number in the list
+      {
+        if (n == value) // check if it matches
+        {
+          contains = true;
+          break; // no need to check any further
+        }
+      }
+      return contains;
+    }
+
 
     #region DataSending
 
     #region DataSending TCP
-    public static void SendTCP(Package package, int clientID)
+    public static void TCPSend(Package package, int clientID)
     {
       Send(Protocol.TCP, package, clientID);
     }
-    public static void SendTCPAll(Package package)
+    public static void TCPSendAll(Package package)
     {
       SendAll(Protocol.TCP, package);
     }
-    public static void SendTCPAllExcept(Package package, int[] exceptClientIDs)
+    public static void TCPSendAllExcept(Package package, int[] exceptClientIDs)
     {
       SendAllExcept(Protocol.TCP, package, exceptClientIDs);
+    }
+    public static void TCPSendSpecific(Package package, int[] specificClientIDs)
+    {
+      SendAllExcept(Protocol.TCP, package, specificClientIDs);
     }
     #endregion
 
     #region DataSending UDP
-    public static void SendUDP(Package package, int clientID)
+    public static void UDPSend(Package package, int clientID)
     {
       Send(Protocol.UDP, package, clientID);
     }
-    public static void SendUDPAll(Package package)
+    public static void UDPSendAll(Package package)
     {
       SendAll(Protocol.UDP, package);
     }
-    public static void SendUDPAllExcept(Package package, int[] exceptClientIDs)
+    public static void UDPSendAllExcept(Package package, int[] exceptClientIDs)
     {
       SendAllExcept(Protocol.UDP, package, exceptClientIDs);
+    }
+    public static void UDPSendSpecific(Package package, int[] specificClientIDs)
+    {
+      SendAllExcept(Protocol.UDP, package, specificClientIDs);
     }
     #endregion
 
@@ -107,10 +141,8 @@ namespace Networking
 
     public static void SendAll(Protocol protocol, Package package)
     {
-      print("test");
       IterateClients((ServerClient client) =>
       {
-        print(client.id);
         SendData(protocol, package, client);
       });
     }
@@ -120,7 +152,22 @@ namespace Networking
       // except ids
       IterateClients((ServerClient client) =>
       {
-        SendData(protocol, package, client);
+        if (!IntInArray(exceptClientIDs, client.id))
+        {
+          SendData(protocol, package, client);
+        }
+      });
+    }
+
+    public static void SendSpecific(Protocol protocol, Package package, int[] specificClientIDs)
+    {
+      // specific ids
+      IterateClients((ServerClient client) =>
+      {
+        if (IntInArray(specificClientIDs, client.id))
+        {
+          SendData(protocol, package, client);
+        }
       });
     }
 

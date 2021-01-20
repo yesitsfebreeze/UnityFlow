@@ -641,11 +641,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2115069566}
-  - component: {fileID: 2115069568}
-  - component: {fileID: 2115069567}
   - component: {fileID: 2115069569}
   m_Layer: 0
-  m_Name: Network
+  m_Name: Client
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -665,33 +663,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2115069567
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2115069565}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c9655e1b9d903a4c93b1622d184903e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  NetworkSettings: {fileID: 11400000, guid: e59a1422e49202540806175f24728721, type: 2}
-  actions: []
---- !u!114 &2115069568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2115069565}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 621b44630b7685e448a65ce0e6d040f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isClient: 1
 --- !u!114 &2115069569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -704,7 +675,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcac8f173ad87a54aa8fd2214891971d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NetworkSettings: {fileID: 11400000, guid: e59a1422e49202540806175f24728721, type: 2}
+  NetworkSettings: {fileID: 11400000, guid: c640178cea4f0ad45aeb7a3116877dd0, type: 2}
+  wasConnected: 0
   id: 0
   ip: 
   port: 0

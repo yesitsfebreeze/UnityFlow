@@ -8,31 +8,35 @@ using System.IO;
 public static class BuildMultiplayer
 {
 
-
-  [MenuItem("Networking/BuildMultiplayer (Server Only) %F1")]
-  static void PerformMultyPlayerBuildServer()
-  {
-    StartBuild(0);
-  }
-
-  [MenuItem("Networking/BuildMultiplayer (1 Player) %F2")]
+  [MenuItem("Networking/BuildMultiplayer (1 Player) %F1")]
   static void PerformMultyPlayerBuildOne()
   {
     StartBuild(1);
   }
 
-  [MenuItem("Networking/BuildMultiplayer (2 Players) %F3")]
+  [MenuItem("Networking/BuildMultiplayer (2 Players) %F2")]
   static void PerformMultyPlayerBuildTwo()
   {
     StartBuild(2);
   }
 
-  [MenuItem("Networking/BuildMultiplayer (4 Players) %F4")]
+  [MenuItem("Networking/BuildMultiplayer (3 Players) %F3")]
+  static void PerformMultyPlayerBuildThree()
+  {
+    StartBuild(3);
+  }
+
+  [MenuItem("Networking/BuildMultiplayer (3 Players) %F4")]
   static void PerformMultyPlayerBuildFour()
   {
     StartBuild(4);
   }
 
+  [MenuItem("Networking/BuildMultiplayer (Server Only) %F12")]
+  static void PerformMultyPlayerBuildServer()
+  {
+    StartBuild(0);
+  }
 
 
   private static void StartBuild(int playerCount)

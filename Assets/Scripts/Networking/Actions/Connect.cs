@@ -1,9 +1,9 @@
 using UnityEngine;
+using Networking;
 
-namespace Networking
+namespace NetworkingActions
 {
-
-  public class ConnectAction : NetworkAction
+  public class NA_Connect : NetworkAction
   {
 
     override public void FromClient(int clientID, Package package)
@@ -21,7 +21,7 @@ namespace Networking
 
       Debug.Log($"Player ({clientID}) has connected");
 
-      SpawnAction action = Actions.Get("Spawn") as SpawnAction;
+      NA_Spawn action = Actions.Get("Spawn") as NA_Spawn;
       action.ToClient(clientID, Vector3.zero + new Vector3(0, 4f, 0), Quaternion.identity);
     }
 
@@ -31,7 +31,7 @@ namespace Networking
       {
         package.Write(clientID);
         package.Write(username);
-        LocalClient.SendTCPData(package);
+        LocalClient.TCPSend(package);
       }
     }
 
@@ -43,7 +43,7 @@ namespace Networking
         package.Write(clientID);
         package.Write(msg);
 
-        Server.SendTCP(package, clientID);
+        Server.TCPSend(package, clientID);
       }
     }
 
@@ -62,4 +62,5 @@ namespace Networking
     }
   }
 }
+
 

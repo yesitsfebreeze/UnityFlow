@@ -1,9 +1,9 @@
 using UnityEngine;
+using Networking;
 
-namespace Networking
+namespace NetworkingActions
 {
-
-  public class SpawnAction : NetworkAction
+  public class NA_Spawn : NetworkAction
   {
 
     override public void FromClient(int clientID, Package package)
@@ -49,7 +49,8 @@ namespace Networking
         package.Write(position);
         package.Write(rotation);
 
-        Server.SendTCPAll(package);
+        Server.TCPSend(package, clientID);
+        // Server.SendTCPAll(package);
       }
 
 
@@ -58,7 +59,7 @@ namespace Networking
       // {
       //   // if (client.id != clientID)
       //   // {
-      //   using (Packet package = new Packet(GetID()))
+      //   using (Package package = new Package(GetID()))
       //   {
       //     package.Write(clientID);
       //     package.Write(position);
@@ -72,4 +73,5 @@ namespace Networking
     }
   }
 }
+
 

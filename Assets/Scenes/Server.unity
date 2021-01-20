@@ -132,8 +132,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1362744330}
-  - component: {fileID: 1362744332}
-  - component: {fileID: 1362744331}
   - component: {fileID: 1362744329}
   m_Layer: 0
   m_Name: Server
@@ -154,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2c3a3f2661fb9c4c8a19b504c84c306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NetworkSettings: {fileID: 11400000, guid: e59a1422e49202540806175f24728721, type: 2}
+  NetworkSettings: {fileID: 11400000, guid: c640178cea4f0ad45aeb7a3116877dd0, type: 2}
 --- !u!4 &1362744330
 Transform:
   m_ObjectHideFlags: 0
@@ -169,30 +167,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1362744331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1362744328}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c9655e1b9d903a4c93b1622d184903e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  NetworkSettings: {fileID: 11400000, guid: e59a1422e49202540806175f24728721, type: 2}
-  actions: []
---- !u!114 &1362744332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1362744328}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 621b44630b7685e448a65ce0e6d040f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isClient: 0

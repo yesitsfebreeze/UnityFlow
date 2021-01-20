@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92047c11045537148a3a4fb3cf366898, type: 3}
+  m_Script: {fileID: 11500000, guid: ad23ab8d6616e9c44891054c99b758f5, type: 3}
   m_Name: NetworkSettings
   m_EditorClassIdentifier: 
   DEVELOPMENT_MODE: 1
   IP: 127.0.0.1
-  MAX_PLAYERS: 4
+  MAX_PLAYERS: 50
   PORT: 26950
   TICK_RATE: 64
   DATA_BUFFER_SIZE: 4096

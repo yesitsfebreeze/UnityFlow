@@ -43,6 +43,7 @@ namespace Flow
       ThreadManager threadManager = gameObject.AddComponent<ThreadManager>();
       threadManager.isClient = true;
       FlowActionsRegistry actions = gameObject.AddComponent<FlowActionsRegistry>();
+      actions.isClient = true;
       actions.FlowSettings = settings;
 
       if (settings.DEVELOPMENT_MODE)

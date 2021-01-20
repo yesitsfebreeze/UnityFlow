@@ -1,4 +1,5 @@
 using UnityEngine;
+using Flow.ServerSide;
 
 namespace Flow
 {
@@ -6,7 +7,6 @@ namespace Flow
   public class ServerClient
   {
     public int id;
-    // public Player player;
     public ServerClientTCP tcp;
     public ServerClientUDP udp;
     public bool isConnected = false;
@@ -42,7 +42,8 @@ namespace Flow
       udp.Disconnect();
       IsConnected();
 
-      // ServerSend.PlayerDisconnected(id);
+      Disconnect action = FlowActions.Get("Disconnect") as Disconnect;
+      action.Out(id, $"Player ({id}) has disconnected.");
     }
   }
 }

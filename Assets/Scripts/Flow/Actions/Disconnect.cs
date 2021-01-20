@@ -1,26 +1,35 @@
 using UnityEngine;
-using Flow;
 
 namespace Flow
 {
-  public class DisconnectFlowAction : FlowAction
+  namespace ClientSide
   {
-
-    override public void FromClient(int clientID, FlowPackage package)
+    public class Disconnect : FlowAction
     {
+
+
+      override public void In(FlowPackage package)
+      {
+      }
+
+      public void Out(int clientID, string username)
+      {
+      }
     }
+  }
 
-    public void ToServer(int clientID, string username)
+  namespace ServerSide
+  {
+    public class Disconnect : FlowAction
     {
-    }
 
-    override public void FromServer(FlowPackage package)
-    {
-    }
+      override public void In(FlowPackage package, int clientID)
+      {
+      }
 
-
-    public void ToClient(int clientID, string msg)
-    {
+      public void Out(int clientID, string msg)
+      {
+      }
     }
   }
 }

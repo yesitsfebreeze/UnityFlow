@@ -6,6 +6,9 @@ https://github.com/tom-weiland/tcp-udp-networking
 It streamlines the process into 1 Unity project and provides actions to communicate betweent he server and clients.
 There is also an editor script that launches multiple clients for you to test the functionality.
 
+This system is intended to be used for fast prototyping and exploration.
+If your prototype is complete and you want to take the project to a more serious level, you should split the projects into server and client.
+
 # Settings (Scripts/Flow/FlowSettings)
 here you can set the global Settings needed to run a dedicated server.
 Also this is the location where you register your actions

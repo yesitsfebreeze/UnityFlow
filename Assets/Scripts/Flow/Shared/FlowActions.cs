@@ -9,23 +9,25 @@ namespace Flow
   {
     public FlowSettings FlowSettings;
     public static FlowSettings settings;
+    public bool isClient = false;
     public Component[] actions;
     public static FlowActionsRegistry instance;
 
-    public static string POST_FIX = "FlowAction";
     public static string NAME_SPACE = "Flow";
 
     void RegisterActions()
     {
+      string subNamespace = "ServerSide";
+      if (isClient) subNamespace = "ClientSide";
+
       foreach (string action in settings.actions)
       {
-        string actionName = Regex.Replace(action, $@"{POST_FIX}$", "") + POST_FIX;
-        string actionType = $"{NAME_SPACE}." + actionName;
+        string actionType = $"{NAME_SPACE}.{subNamespace}." + action;
         Type networkAction = Type.GetType(actionType);
 
         if (networkAction == null)
         {
-          Debug.LogError($"Action of type {actionType} not found! Namespace must be '{{NAME_SPACE}}' and method must be postfixed with '{POST_FIX}'");
+          Debug.LogError($"Action of type {actionType} not found! Namespace must be '{NAME_SPACE}.{subNamespace}'.");
         }
         else
         {
@@ -77,7 +79,7 @@ namespace Flow
 
     public static void Register(FlowAction action)
     {
-      string actionName = Regex.Replace(action.GetType().Name, $@"{FlowActionsRegistry.POST_FIX}$", "");
+      string actionName = action.GetType().Name;
       if (actions.TryGetValue(actionName, out FlowAction flowAction)) return;
 
       action.Register(ActionCount, actions);
@@ -98,15 +100,10 @@ namespace Flow
   }
 
 
-
   public class FlowAction : MonoBehaviour
   {
     public int id;
     public static FlowSettings settings;
-
-    public delegate void FromClientHandler(int clientID, FlowPackage package);
-    public delegate void FromServerHandler(FlowPackage package);
-
 
     public int GetID()
     {
@@ -126,19 +123,22 @@ namespace Flow
     public void Register(int actionID, Dictionary<string, FlowAction> actions)
     {
       id = actionID + 1;
-      string actionName = Regex.Replace(this.GetType().Name, $@"{FlowActionsRegistry.POST_FIX}$", "");
+      string actionName = this.GetType().Name;
       actions.Add(actionName, this);
     }
 
-    virtual public void FromClient(int clientID, FlowPackage package)
-    {
-      Debug.Log("not implemented");
-    }
+    // virtual public void FromClient(int clientID, FlowPackage package)
+    // {
+    //   Debug.Log("not implemented");
+    // }
 
-    virtual public void FromServer(FlowPackage package)
-    {
-      Debug.Log("not implemented");
-    }
+    // virtual public void FromServer(FlowPackage package)
+    // {
+    //   Debug.Log("not implemented");
+    // }
+
+    virtual public void In(FlowPackage package, int clientID) { }
+    virtual public void In(FlowPackage package) { }
 
   }
 }

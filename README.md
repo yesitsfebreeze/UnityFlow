@@ -14,7 +14,7 @@ For building the client you would discard all changes in (Project/Server) and vi
 Here you can set the global settings needed to run a dedicated server.
 
 # Actions (Scripts/FlowActions)
-To create new actions you can use the asset menu (rightclick -> Flow -> Add FlowAction)
+To create new actions you can use the asset menu (rightclick -> Flow -> Add FlowAction).
 Actions are automatically indexed by the script, so no need for registering them.
 
 An action consists of 4 components:

@@ -17,7 +17,7 @@ here you can set the global Settings needed to run a dedicated server.
 To Create new actions you can use the asset menu (rightclick -> Flow -> Add FlowAction)
 Actions are automatically indexed by the Script, so no need for registering them.
 
-An Action consists of 4 Components
+An action consists of 4 Components
 
 ## FlowClientPackage
 Package definition for data sent by the client

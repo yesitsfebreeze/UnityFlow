@@ -26,7 +26,6 @@ namespace Client
 
     public static void RemoveEnemyPrefab(int _clientId)
     {
-      Debug.Log($"RemoveEnemyPrefab {_clientId}");
       if (enemyPrefabs.TryGetValue(_clientId, out GameObject prefab)) Destroy(prefab);
       enemyPrefabs.Remove(_clientId);
     }

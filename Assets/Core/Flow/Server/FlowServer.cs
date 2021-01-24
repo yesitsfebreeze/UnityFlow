@@ -66,7 +66,7 @@ namespace Flow.Server
         Logger.Log($"Server started listening on port {settings.PORT}");
       else
       {
-        Logger.Log("Server cold not start!");
+        Logger.Log("Server could not start!");
         return;
       }
     }

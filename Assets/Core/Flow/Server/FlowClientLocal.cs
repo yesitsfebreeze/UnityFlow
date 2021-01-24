@@ -55,7 +55,6 @@ namespace Flow.Server
     /// </summary>
     private void Connect()
     {
-      Logger.Log(IsEnabled);
       if (!IsEnabled) return;
 
       if (netManager.IsRunning) netManager.Stop();

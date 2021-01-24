@@ -11,13 +11,13 @@ This can be done by creating 2 git submodules for (Project/Client) and (Project/
 For building the client you would discard all changes in (Project/Server) and vice versa.
 
 # Settings (Scripts/Flow/FlowSettings)
-here you can set the global Settings needed to run a dedicated server.
+Here you can set the global settings needed to run a dedicated server.
 
 # Actions (Scripts/FlowActions)
-To Create new actions you can use the asset menu (rightclick -> Flow -> Add FlowAction)
-Actions are automatically indexed by the Script, so no need for registering them.
+To create new actions you can use the asset menu (rightclick -> Flow -> Add FlowAction)
+Actions are automatically indexed by the script, so no need for registering them.
 
-An action consists of 4 Components
+An action consists of 4 components:
 
 ## FlowClientPackage
 Package definition for data sent by the client

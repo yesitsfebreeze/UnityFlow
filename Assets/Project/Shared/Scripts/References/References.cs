@@ -6,9 +6,15 @@ using UnityEngine;
 public class References : MonoBehaviour
 {
 
-  public static SO_DefaultReferences defaultReferences;
+  public SO_DefaultReferences defaultReferences;
+  public static SO_DefaultReferences defaults;
 
   public static Dictionary<string, MonoBehaviour> references = new Dictionary<string, MonoBehaviour>();
+
+  void Awake()
+  {
+    defaults = defaultReferences;
+  }
 
   public void Add(string name, MonoBehaviour classRef)
   {

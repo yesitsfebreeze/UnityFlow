@@ -32,12 +32,12 @@ namespace Flow.Actions
     {
       if (package.clientId == FlowClientLocal.id)
       {
-        GameObject prefab = Instantiate(References.defaultReferences.PLAYER_PREFAB, package.position, package.rotation); ;
+        GameObject prefab = Instantiate(References.defaults.PLAYER_PREFAB, package.position, package.rotation); ;
         ClientPlayerManager.AddPlayerPrefab(prefab);
       }
       else
       {
-        GameObject prefab = Instantiate(References.defaultReferences.ENEMY_PREFAB, package.position, package.rotation);
+        GameObject prefab = Instantiate(References.defaults.ENEMY_PREFAB, package.position, package.rotation);
         ClientPlayerManager.AddEnemyPrefab(prefab, package.clientId);
       }
     }
@@ -57,7 +57,7 @@ namespace Flow.Actions
     /// <summary>Sends the server package to the client(s).<summary>
     public void Send(int _clientId, Vector3 _position, Quaternion _rotation)
     {
-      GameObject prefab = Instantiate(References.defaultReferences.SERVER_PLAYER_PREFAB, _position, _rotation);
+      GameObject prefab = Instantiate(References.defaults.SERVER_PLAYER_PREFAB, _position, _rotation);
       ServerPlayerManager.AddPlayerPrefab(prefab, _clientId);
 
       // spawn new client onn all existing clients

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 941761da40f029641b1e610970e16cf5, type: 3}
   m_Name: FlowSettings
   m_EditorClassIdentifier: 
-  DEVELOPMENT_MODE: 1
+  DEVELOPMENT_MODE: 0
   GAME_NAME: ARENA
   TEST_SCENE_SERVER: Assets/Project/Server/Scenes/Server
   TEST_SCENE_CLIENT: Assets/Project/Client/Scenes/Client
@@ -20,10 +20,9 @@ MonoBehaviour:
   MAX_PLAYERS: 50
   PORT: 26950
   TICK_RATE: 64
-  DATA_BUFFER_SIZE: 4096
-  PLAYER_PREFAB: {fileID: 3973411717710382860, guid: 63d2aeae19c0b2746ac7f29a32ace0c9,
+  PLAYER_PREFAB: {fileID: 1519267308563038778, guid: de8c7b5f2bc76a04e942ced3a1b71bd4,
     type: 3}
-  ENEMY_PREFAB: {fileID: 7175285374917892172, guid: f23d3b4c51e050a47ae248e7b9be37a3,
+  ENEMY_PREFAB: {fileID: 5998954090897690139, guid: 6d625dc1b6f2f174dad85383199a54d2,
     type: 3}
   SERVER_PLAYER_PREFAB: {fileID: 7385613148691942526, guid: c114d9af09db8794fb8703b5a300dd05,
     type: 3}

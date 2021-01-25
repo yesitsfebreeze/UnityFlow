@@ -14,9 +14,5 @@ public class FlowSettings : ScriptableObject
   public int MAX_PLAYERS = 50;
   public int PORT = 26950;
   public int TICK_RATE = 128;
-  public int DATA_BUFFER_SIZE = 4096;
-  public GameObject PLAYER_PREFAB;
-  public GameObject ENEMY_PREFAB;
-  public GameObject SERVER_PLAYER_PREFAB;
 }
 

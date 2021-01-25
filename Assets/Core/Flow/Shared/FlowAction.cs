@@ -14,7 +14,7 @@ namespace Flow.Shared
   public class FlowAction : MonoBehaviour
   {
     public int id;
-    public bool IsClient = false;
+    public bool isClient = false;
     public FlowSettings settings;
     public NetDataWriter writer;
     public NetPacketProcessor processor;
@@ -54,7 +54,7 @@ namespace Flow.Shared
     {
       writer.Reset();
       processor.Write(writer, package);
-      return new ActionSender(writer, IsClient);
+      return new ActionSender(writer, isClient);
     }
 
     /// <summary>
@@ -63,11 +63,11 @@ namespace Flow.Shared
     public class ActionSender
     {
       private NetDataWriter writer;
-      public static bool IsClient = false;
+      public static bool isClient = false;
 
-      public ActionSender(NetDataWriter _writer, bool _IsClient)
+      public ActionSender(NetDataWriter _writer, bool _isClient)
       {
-        IsClient = _IsClient;
+        isClient = _isClient;
         writer = _writer;
       }
 
@@ -79,7 +79,7 @@ namespace Flow.Shared
       /// <param name="clientId"></param>
       public void Send(SendMethod method, int clientId = -1)
       {
-        if (IsClient)
+        if (isClient)
         {
           FlowClientLocal.peer.Send(writer, (DeliveryMethod)method);
         }
@@ -96,7 +96,7 @@ namespace Flow.Shared
       /// <param name="method"></param>
       public void SendAll(SendMethod method)
       {
-        if (IsClient)
+        if (isClient)
         {
           throw new NotSupportedException("SendAll is not supported on the client.");
         }
@@ -114,7 +114,7 @@ namespace Flow.Shared
       /// <param name="clientIds"></param>
       public void SendExcept(SendMethod method, int[] clientIds)
       {
-        if (IsClient)
+        if (isClient)
         {
           throw new NotSupportedException("SendAllExcept is not supported on the client.");
         }
@@ -132,7 +132,7 @@ namespace Flow.Shared
       /// <param name="clientIds"></param>
       public void SendExclusively(SendMethod method, int[] clientIds)
       {
-        if (IsClient)
+        if (isClient)
         {
           throw new NotSupportedException("SendMultiple is not supported on the client.");
         }

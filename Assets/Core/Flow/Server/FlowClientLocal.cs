@@ -11,7 +11,7 @@ namespace Flow.Server
   {
 
     public static int id = -1;
-    public bool IsConnected = false;
+    public static bool isConnected = false;
     public FlowSettings FlowSettings;
     public static FlowSettings settings;
     public static NetPeer peer;
@@ -35,7 +35,7 @@ namespace Flow.Server
     void Start()
     {
       Setup();
-      flowActions.OnRegistered.AddListener(Connect);
+      FlowActions.RegisterOnStartedCallback(Connect);
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace Flow.Server
     {
       settings = FlowSettings;
       FlowActions.settings = settings;
-      FlowActions.IsClient = true;
+      FlowActions.isClient = true;
       flowActions = gameObject.AddComponent<FlowActions>();
       IsEnabled = true;
     }
@@ -62,12 +62,12 @@ namespace Flow.Server
       if (netManager.Start())
       {
         netManager.Connect(settings.IP, settings.PORT, settings.GAME_NAME);
-        IsConnected = true;
+        isConnected = true;
         Logger.Log("Trying to connecting to server...");
       }
       else
       {
-        IsConnected = false;
+        isConnected = false;
         Logger.Log("Could not connect to server...");
       }
     }
@@ -77,7 +77,7 @@ namespace Flow.Server
     /// </summary>
     public void Disconnect()
     {
-      IsConnected = false;
+      isConnected = false;
       netManager.Stop();
       this.enabled = false;
     }
@@ -95,7 +95,7 @@ namespace Flow.Server
     /// </summary>
     void OnDisable()
     {
-      if (IsConnected) Disconnect();
+      if (isConnected) Disconnect();
     }
 
     /// <summary>

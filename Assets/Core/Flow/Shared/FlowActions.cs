@@ -15,7 +15,7 @@ namespace Flow.Shared
   public class FlowActions : MonoBehaviour
   {
     public static List<string> AvailableActions;
-    public static bool IsClient = false;
+    public static bool isClient = false;
     public static int ActionCount = 0;
     public static Dictionary<string, Component> actionComponents = new Dictionary<string, Component>();
     public static Dictionary<string, FlowAction> actions = new Dictionary<string, FlowAction>();
@@ -25,7 +25,8 @@ namespace Flow.Shared
     public static NetPacketProcessor processor;
     public static FlowActions instance;
     public static string ACTION_NAME_SPACE = "Flow.Actions";
-    public UnityEvent OnRegistered;
+    public static UnityEvent OnStartedEvent;
+    public static bool HasListeners;
 
     private HashSet<string> actionNames = new HashSet<string>();
 
@@ -33,7 +34,7 @@ namespace Flow.Shared
     {
       if (instance == null)
       {
-        OnRegistered = new UnityEvent();
+        OnStartedEvent = new UnityEvent();
         instance = this;
       }
       else if (instance != this)
@@ -41,6 +42,11 @@ namespace Flow.Shared
         Logger.Log("Instance already exists, destroying object!");
         Destroy(this);
       }
+    }
+
+    void FixedUpdate()
+    {
+      FireStartedCallbacks();
     }
 
     void Start()
@@ -51,7 +57,28 @@ namespace Flow.Shared
       RegisterProcessorExtensions();
       CollectActions();
       RegisterActions();
-      OnRegistered.Invoke();
+      FireStartedCallbacks();
+    }
+
+    /// <summary>
+    /// Fires the callback when listeners are present
+    /// </summary>
+    private static void FireStartedCallbacks()
+    {
+      if (!HasListeners) return;
+      OnStartedEvent.Invoke();
+      OnStartedEvent.RemoveAllListeners();
+      HasListeners = false;
+    }
+
+    /// <summary>
+    /// Callback that fires when all actions are registered.
+    /// </summary>
+    /// <param name="call"></param>
+    static public void RegisterOnStartedCallback(UnityAction call)
+    {
+      OnStartedEvent.AddListener(call);
+      HasListeners = true;
     }
 
     void OnDestroy()
@@ -141,7 +168,7 @@ namespace Flow.Shared
       action.settings = settings;
       action.writer = writer;
       action.processor = processor;
-      action.IsClient = IsClient;
+      action.isClient = isClient;
       action.SubscribePackage();
     }
 
@@ -158,7 +185,7 @@ namespace Flow.Shared
       string stripped = Regex.Replace(name, @"FlowClientAction$", "");
       stripped = Regex.Replace(stripped, @"FlowServerAction$", "");
       if (strip) return stripped;
-      if (IsClient) return stripped + "FlowClientAction";
+      if (isClient) return stripped + "FlowClientAction";
       return stripped + "FlowServerAction";
     }
 

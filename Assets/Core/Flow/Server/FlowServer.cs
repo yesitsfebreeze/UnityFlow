@@ -12,7 +12,7 @@ namespace Flow.Server
   /// </summary>
   class FlowServer : MonoBehaviour, INetEventListener
   {
-
+    public static bool isRunning = false;
     public FlowSettings FlowSettings;
     public static FlowSettings settings;
     public delegate bool IterateClientCallback(FlowClientServer client);
@@ -53,7 +53,7 @@ namespace Flow.Server
     void Start()
     {
       Setup();
-      flowActions.OnRegistered.AddListener(StartServer);
+      FlowActions.RegisterOnStartedCallback(StartServer);
     }
 
     /// <summary>
@@ -63,7 +63,10 @@ namespace Flow.Server
     {
       if (netManager.IsRunning) return;
       if (netManager.Start(settings.PORT))
+      {
         Logger.Log($"Server started listening on port {settings.PORT}");
+        isRunning = true;
+      }
       else
       {
         Logger.Log("Server could not start!");

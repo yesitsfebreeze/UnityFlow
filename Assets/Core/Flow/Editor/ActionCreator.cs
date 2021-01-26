@@ -11,7 +11,7 @@ public class ActionCreator : EditorWindow
   static string FileFolderPath;
   static string Name;
 
-  [MenuItem("Assets/Create/Flow/Add FlowAction")]
+  [MenuItem("Assets/Create/Flow/Add FlowAction", false, 9999)]
   static void Init()
   {
     FileFolderPath = GetAssetPath();
@@ -100,7 +100,7 @@ public class ActionCreator : EditorWindow
 
 using Flow.Shared;
 using UnityEngine;
-using Flow.Server;
+using UnityEngine.Events;
 
 namespace Flow.Actions
 {{
@@ -123,6 +123,9 @@ namespace Flow.Actions
   public class {Name}FlowClientAction : FlowAction
   {{
 
+    /// <summary>Action to handle multiple events when a package is received.<summary>
+    public UnityAction<{Name}FlowServerPackage> OnPackageReceive;
+
     /// <summary>Subscribes server packages on the client.<summary>
     public override void SubscribePackage()
     {{
@@ -132,6 +135,8 @@ namespace Flow.Actions
     /// <summary>Handles a server package on the client.<summary>
     private void Handle({Name}FlowServerPackage package)
     {{
+      if (OnPackageReceive != null) OnPackageReceive.Invoke(package);
+
       Debug.Log(package.ExampleValueC);
       Debug.Log(package.ExampleValueD);
     }}
@@ -152,6 +157,9 @@ namespace Flow.Actions
   public class {Name}FlowServerAction : FlowAction
   {{
 
+    /// <summary>Action to handle multiple events when a package is received.<summary>
+    public UnityAction<{Name}FlowClientPackage> OnPackageReceive;
+
     /// <summary>Subscribes client packages on the Server.<summary>
     public override void SubscribePackage()
     {{
@@ -161,6 +169,8 @@ namespace Flow.Actions
     /// <summary>Handles a client package on the server.<summary>
     private void Handle({Name}FlowClientPackage package)
     {{
+      if (OnPackageReceive != null) OnPackageReceive.Invoke(package);
+
       Debug.Log(package.ExampleValueA);
       Debug.Log(package.ExampleValueB);
     }}

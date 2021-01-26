@@ -14,7 +14,8 @@ namespace Flow.Server
   public class FlowClientServer
   {
 
-    public int id = -1;
+    public int id = -999;
+    public string endPoint = "";
     public bool isConnected = false;
     public NetPeer peer;
 
@@ -25,15 +26,31 @@ namespace Flow.Server
     /// Connect this client to the passed peer
     /// </summary>
     /// <param name="_peer"></param>
-    public void Connect(NetPeer _peer)
+    public FlowClientServer Connect(NetPeer _peer, bool wasConnected = false)
     {
-      if (isConnected) return;
+      if (isConnected) return this;
       peer = _peer;
       peer.Tag = this;
+      id = peer.Id;
       isConnected = true;
-      Logger.Log($"Client ({id}) has connected");
+      endPoint = $"{peer.EndPoint.Address}:{peer.EndPoint.Port}";
       ConnectFlowServerAction action = FlowActions.GetActionByName("Connect") as ConnectFlowServerAction;
-      action.Send(id, "You connected succesfully.");
+
+      if (wasConnected)
+      {
+        Logger.Log($"Client ({id}) has reconnected");
+        action.Send(id, "You reconnected succesfully.");
+      }
+      else
+      {
+        if (FlowServer.clients.ContainsKey(id)) FlowServer.clients.Remove(id);
+        Logger.Log($"Client ({id}) has connected");
+        FlowServer.clients.Add(id, this);
+        action.Send(id, "You connected succesfully.");
+      }
+
+
+      return this;
     }
 
     /// <summary>

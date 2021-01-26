@@ -80,6 +80,7 @@ namespace Flow.Server
     /// </summary>
     void FixedUpdate()
     {
+      // todo: check if fixed update has same time
       if (netManager.IsRunning) netManager.PollEvents();
     }
 
@@ -102,7 +103,7 @@ namespace Flow.Server
     public static void IterateClients(IterateClientCallback callback)
     {
       bool proceed = true;
-      foreach (var id in Range(1, settings.MAX_PLAYERS))
+      foreach (var id in clients.Keys)
       {
         if (!proceed) break;
         if (clients.ContainsKey(id))
@@ -118,17 +119,8 @@ namespace Flow.Server
     /// <param name="callback"></param>
     public static void CreateClient(CreateClientCallback callback)
     {
-      foreach (var id in Range(1, settings.MAX_PLAYERS))
-      {
-        if (!clients.ContainsKey(id))
-        {
-          FlowClientServer client = new FlowClientServer();
-          client.id = id;
-          clients.Add(id, client);
-          callback(clients[id]);
-          break;
-        }
-      }
+
+
     }
 
     /// <summary>
@@ -147,7 +139,27 @@ namespace Flow.Server
     void INetEventListener.OnPeerConnected(NetPeer peer)
     {
       Logger.Log($"Incomming connection from {peer.EndPoint.Address}:{peer.EndPoint.Port}");
-      CreateClient((FlowClientServer client) => client.Connect(peer));
+      if (clients.ContainsKey(peer.Id) && clients.TryGetValue(peer.Id, out FlowClientServer existingClient))
+      {
+
+        if ($"{peer.EndPoint.Address}:{peer.EndPoint.Port}" == existingClient.endPoint)
+        {
+          existingClient.Connect(peer, true);
+        }
+        else
+        {
+          existingClient.Connect(peer, true);
+        }
+
+        return;
+      }
+      if (clients.Count >= settings.MAX_PLAYERS)
+      {
+        Logger.Log("Server is full");
+        return;
+      }
+      FlowClientServer client = new FlowClientServer();
+      client.Connect(peer);
     }
 
 
@@ -162,7 +174,7 @@ namespace Flow.Server
 
       IterateConnectedClients((FlowClientServer client) =>
       {
-        if (peer.Tag == client) return client.Disconnect();
+        if (peer.Id == client.id) return client.Disconnect();
         return true;
       });
     }

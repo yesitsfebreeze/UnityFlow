@@ -77,7 +77,7 @@ namespace Flow.Shared
       /// </summary>
       /// <param name="method"></param>
       /// <param name="clientId"></param>
-      public void Send(SendMethod method, int clientId = -1)
+      public void Send(SendMethod method, int clientId = -999)
       {
         if (isClient)
         {
@@ -85,7 +85,7 @@ namespace Flow.Shared
         }
         else
         {
-          if (clientId == -1) throw new ArgumentException("The clients id must be passed.");
+          if (clientId == -999) throw new ArgumentException("The clients id must be passed.");
           FlowServer.clients[clientId].peer.Send(writer, (DeliveryMethod)method);
         }
       }

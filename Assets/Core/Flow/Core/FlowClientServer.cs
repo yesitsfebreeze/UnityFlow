@@ -1,11 +1,9 @@
 using LiteNetLib;
-using Flow.Shared;
 using Flow.Actions;
-using System.Collections.Generic;
 using System.Timers;
 using System;
 
-namespace Flow.Server
+namespace Flow
 {
 
   /// <summary>
@@ -38,13 +36,13 @@ namespace Flow.Server
 
       if (wasConnected)
       {
-        Logger.Log($"Client ({id}) has reconnected");
+        Logger.Debug($"Client ({id}) has reconnected");
         action.Send(id, "You reconnected succesfully.");
       }
       else
       {
         if (FlowServer.clients.ContainsKey(id)) FlowServer.clients.Remove(id);
-        Logger.Log($"Client ({id}) has connected");
+        Logger.Debug($"Client ({id}) has connected");
         FlowServer.clients.Add(id, this);
         action.Send(id, "You connected succesfully.");
       }
@@ -71,7 +69,7 @@ namespace Flow.Server
       {
         peer.Disconnect();
         FlowServer.clients.Remove(id);
-        Logger.Log($"Client ({id}) has disconnected");
+        Logger.Debug($"Client ({id}) has disconnected");
         DisconnectFlowServerAction action = FlowActions.GetActionByName("Disconnect") as DisconnectFlowServerAction;
         action.Send(id);
         disconnectTimer.Enabled = false;

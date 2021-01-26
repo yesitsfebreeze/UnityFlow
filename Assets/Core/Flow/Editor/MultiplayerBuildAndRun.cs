@@ -49,7 +49,7 @@ public static class BuildMultiplayer
     BuildPlayerOptions serverOptions = new BuildPlayerOptions();
     serverOptions.scenes = new[] { server };
     serverOptions.target = target;
-    serverOptions.locationPathName = "build/Win64/server/server.exe";
+    serverOptions.locationPathName = "Build/server/server.exe";
     serverOptions.options = BuildOptions.EnableHeadlessMode | BuildOptions.AutoRunPlayer;
 
     BuildPipeline.BuildPlayer(serverOptions);
@@ -60,7 +60,7 @@ public static class BuildMultiplayer
       BuildPlayerOptions clientOptions = new BuildPlayerOptions();
       clientOptions.scenes = new[] { client };
       clientOptions.target = target;
-      clientOptions.locationPathName = "build/Win64/client" + i.ToString() + "/client.exe";
+      clientOptions.locationPathName = "Build/clients/client" + i.ToString() + "/client.exe";
       clientOptions.options = BuildOptions.AutoRunPlayer;
 
       BuildPipeline.BuildPlayer(clientOptions);

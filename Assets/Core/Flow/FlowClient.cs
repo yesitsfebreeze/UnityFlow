@@ -1,13 +1,12 @@
 ﻿using LiteNetLib;
 using UnityEngine;
 using System.Collections;
-using Flow.Shared;
 using Flow.Actions;
 
-namespace Flow.Server
+namespace Flow
 {
 
-  public class FlowClientLocal : MonoBehaviour, INetEventListener
+  public class FlowClient : MonoBehaviour, INetEventListener
   {
 
     public static int id = -1;
@@ -26,6 +25,8 @@ namespace Flow.Server
     /// </summary>
     void Awake()
     {
+      Flow.isClient = true;
+      Flow.isServer = false;
       netManager = new NetManager(this) { AutoRecycle = true, IPv6Enabled = IPv6Mode.Disabled };
     }
 
@@ -138,7 +139,7 @@ namespace Flow.Server
     void INetEventListener.OnPeerConnected(NetPeer ServerPeer)
     {
       peer = ServerPeer;
-      Logger.Log($"Connection established to {peer.EndPoint.Address}:{peer.EndPoint.Port}");
+      Logger.Debug($"Connection established to {peer.EndPoint.Address}:{peer.EndPoint.Port}");
     }
 
     /// <summary>
@@ -171,7 +172,7 @@ namespace Flow.Server
     /// <param name="messageType"></param>
     void INetEventListener.OnNetworkReceiveUnconnected(System.Net.IPEndPoint remoteEndPoint, NetPacketReader reader, UnconnectedMessageType messageType)
     {
-      Logger.Log($"NetworkReceiveUnconnected: {reader.UserDataSize}");
+      Logger.Debug($"NetworkReceiveUnconnected: {reader.UserDataSize}");
     }
 
     // <summary>
@@ -181,7 +182,7 @@ namespace Flow.Server
     /// <param name="latency"></param>
     void INetEventListener.OnNetworkLatencyUpdate(NetPeer peer, int latency)
     {
-      Logger.Log($"latency update {latency}");
+      Logger.Debug($"latency update {latency}");
     }
 
     /// <summary>
@@ -191,7 +192,7 @@ namespace Flow.Server
     /// <param name="socketError"></param>
     void INetEventListener.OnNetworkError(System.Net.IPEndPoint endPoint, System.Net.Sockets.SocketError socketError)
     {
-      Logger.Log($"NetworkError: {socketError}");
+      Logger.Debug($"NetworkError: {socketError}");
     }
   }
 }

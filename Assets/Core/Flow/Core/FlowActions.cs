@@ -6,7 +6,7 @@ using LiteNetLib.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Flow.Shared
+namespace Flow.Actions
 {
 
   /// <summary>
@@ -39,7 +39,7 @@ namespace Flow.Shared
       }
       else if (instance != this)
       {
-        Logger.Log("Instance already exists, destroying object!");
+        Logger.Debug("Instance already exists, destroying object!");
         Destroy(this);
       }
     }

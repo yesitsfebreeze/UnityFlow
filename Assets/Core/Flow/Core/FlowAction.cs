@@ -2,9 +2,8 @@ using UnityEngine;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
-using Flow.Server;
 
-namespace Flow.Shared
+namespace Flow.Actions
 {
 
   /// <summary>
@@ -81,7 +80,7 @@ namespace Flow.Shared
       {
         if (isClient)
         {
-          FlowClientLocal.peer.Send(writer, (DeliveryMethod)method);
+          FlowClient.peer.Send(writer, (DeliveryMethod)method);
         }
         else
         {

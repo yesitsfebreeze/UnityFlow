@@ -1,10 +1,9 @@
 using LiteNetLib;
 using System.Collections.Generic;
 using UnityEngine;
-using Flow.Shared;
-using static System.Linq.Enumerable;
+using Flow.Actions;
 
-namespace Flow.Server
+namespace Flow
 {
 
   /// <summary>
@@ -27,6 +26,9 @@ namespace Flow.Server
     /// </summary>
     void Awake()
     {
+      Flow.isClient = false;
+      Flow.isServer = true;
+
       clients = new Dictionary<int, FlowClientServer>();
       netManager = new NetManager(this) { AutoRecycle = true };
     }
@@ -64,12 +66,12 @@ namespace Flow.Server
       if (netManager.IsRunning) return;
       if (netManager.Start(settings.PORT))
       {
-        Logger.Log($"Server started listening on port {settings.PORT}");
+        Logger.Debug($"Server started listening on port {settings.PORT}");
         isRunning = true;
       }
       else
       {
-        Logger.Log("Server could not start!");
+        Logger.Debug("Server could not start!");
         return;
       }
     }
@@ -138,7 +140,7 @@ namespace Flow.Server
     /// <param name="peer"></param>
     void INetEventListener.OnPeerConnected(NetPeer peer)
     {
-      Logger.Log($"Incomming connection from {peer.EndPoint.Address}:{peer.EndPoint.Port}");
+      Logger.Debug($"Incomming connection from {peer.EndPoint.Address}:{peer.EndPoint.Port}");
       if (clients.ContainsKey(peer.Id) && clients.TryGetValue(peer.Id, out FlowClientServer existingClient))
       {
 
@@ -170,7 +172,7 @@ namespace Flow.Server
     /// <param name="disconnectInfo"></param>
     void INetEventListener.OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {
-      Logger.Log($"Connection to {peer.EndPoint.Address}:{peer.EndPoint.Port} closed. ({disconnectInfo.Reason.ToString()})");
+      Logger.Debug($"Connection to {peer.EndPoint.Address}:{peer.EndPoint.Port} closed. ({disconnectInfo.Reason.ToString()})");
 
       IterateConnectedClients((FlowClientServer client) =>
       {

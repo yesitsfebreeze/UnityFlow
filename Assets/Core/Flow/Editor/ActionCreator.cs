@@ -67,7 +67,7 @@ public class ActionCreator : EditorWindow
   {
     File.WriteAllText(FilePath, GetTemplate(UCFirst(Name)));
     AssetDatabase.ImportAsset(FilePath, ImportAssetOptions.ForceUpdate);
-    Flow.Logger.Log($"Created {FilePath}..");
+    Flow.Logger.Debug($"Created {FilePath}..");
   }
 
 

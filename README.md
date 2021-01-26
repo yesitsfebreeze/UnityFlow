@@ -47,3 +47,6 @@ When you send data in an action, it's mandatory to define one of those transprot
 - Flow.Shared.FlowAction.ActionSender.SendAll
 - Flow.Shared.FlowAction.ActionSender.SendExcept
 - Flow.Shared.FlowAction.ActionSender.SendExclusively
+
+If you have any further questions or suggestions, feel free to hop into my discord:
+https://discord.gg/YqAEJvJaxz

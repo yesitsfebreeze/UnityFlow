@@ -59,6 +59,18 @@ namespace Flow
     }
 
     /// <summary>
+    /// unity method to start the server as soon as this behaviour is created
+    /// </summary>
+    void OnDestroy()
+    {
+      if (netManager.IsRunning)
+      {
+        netManager.Stop();
+        Logger.Debug("Server stopped.");
+      }
+    }
+
+    /// <summary>
     /// actual server start method
     /// </summary>
     private void StartServer()
@@ -82,7 +94,7 @@ namespace Flow
     /// </summary>
     void FixedUpdate()
     {
-      // todo: check if fixed update has same time
+      // TODO: check if fixed update has same time
       if (netManager.IsRunning) netManager.PollEvents();
     }
 

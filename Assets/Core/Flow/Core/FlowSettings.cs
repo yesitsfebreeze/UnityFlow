@@ -14,5 +14,8 @@ public class FlowSettings : ScriptableObject
   public int MAX_PLAYERS = 50;
   public int PORT = 26950;
   public int TICK_RATE = 128;
+  public float ConnectedCheckTime = 5f; // sec
+  public int ReconenctAttempts = 5;
+  public float ReconenctTime = 3f; // sec
 }
 

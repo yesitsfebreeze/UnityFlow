@@ -151,12 +151,12 @@ namespace Flow.Actions
       private static bool IntInArray(Array list, int value)
       {
         bool contains = false;
-        foreach (int n in list) // go over every number in the list
+        foreach (int n in list)
         {
-          if (n == value) // check if it matches
+          if (n == value)
           {
             contains = true;
-            break; // no need to check any further
+            break;
           }
         }
         return contains;

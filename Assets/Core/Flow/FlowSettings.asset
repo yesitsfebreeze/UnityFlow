@@ -20,3 +20,6 @@ MonoBehaviour:
   MAX_PLAYERS: 50
   PORT: 26950
   TICK_RATE: 128
+  ConnectedCheckTime: 5
+  ReconenctAttempts: 5
+  ReconenctTime: 3

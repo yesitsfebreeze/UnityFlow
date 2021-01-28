@@ -16,9 +16,12 @@ namespace Flow
     public static NetPeer peer;
     private FlowActions flowActions;
     private NetManager netManager;
-
     private bool IsEnabled = false;
+    private bool ReconnectStarted = false;
+    private int reconnectAttemt = 1;
+    private bool couldNotConnect = false;
     private const float DISCONNECT_DELAY = 0.35f;
+
 
     /// <summary>
     /// create need instances
@@ -57,19 +60,48 @@ namespace Flow
     private void Connect()
     {
       if (!IsEnabled) return;
-
-      if (netManager.IsRunning) netManager.Stop();
-
-      if (netManager.Start())
+      if ((netManager.Start() || netManager.IsRunning) && !couldNotConnect)
       {
         netManager.Connect(settings.IP, settings.PORT, settings.GAME_NAME);
-        isConnected = true;
-        Logger.Log("Trying to connecting to server...");
+        StartCoroutine(NotConnectedTimeout());
       }
       else
       {
         isConnected = false;
         Logger.Log("Could not connect to server...");
+      }
+    }
+
+    IEnumerator NotConnectedTimeout()
+    {
+      yield return new WaitForSeconds(settings.ConnectedCheckTime);
+      if (isConnected == false)
+      {
+        Logger.Log("Could not connect to server...");
+        couldNotConnect = true;
+        StartCoroutine(TryReconnect());
+      }
+    }
+
+    IEnumerator TryReconnect()
+    {
+      Logger.Log($"Trying to reconnect in {settings.ReconenctTime * reconnectAttemt} seconds.");
+      ReconnectStarted = true;
+      yield return new WaitForSeconds(settings.ReconenctTime * reconnectAttemt);
+
+
+      if (reconnectAttemt < settings.ReconenctAttempts)
+      {
+        couldNotConnect = false;
+        Logger.Log("Reconnecting...");
+        ReconnectStarted = false;
+        Connect();
+        reconnectAttemt++;
+      }
+      else
+      {
+        Logger.Log("Server is not reachable...");
+        isConnected = false;
       }
     }
 
@@ -139,6 +171,7 @@ namespace Flow
     void INetEventListener.OnPeerConnected(NetPeer ServerPeer)
     {
       peer = ServerPeer;
+      isConnected = true;
       Logger.Debug($"Connection established to {peer.EndPoint.Address}:{peer.EndPoint.Port}");
     }
 
@@ -149,8 +182,18 @@ namespace Flow
     /// <param name="disconnectInfo"></param>
     void INetEventListener.OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {
+      if (!isConnected) return;
 
-      // todo: implement
+      if (!couldNotConnect)
+      {
+        Logger.Log("You have disconnected from the server.");
+      }
+
+      if (!ReconnectStarted)
+      {
+        couldNotConnect = true;
+        StartCoroutine(TryReconnect());
+      }
     }
 
     /// <summary>

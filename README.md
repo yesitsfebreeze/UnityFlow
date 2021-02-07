@@ -10,10 +10,10 @@ If your prototype is complete and you want to take the project to a more serious
 This can be done by creating 2 git submodules for (Project/Client) and (Project/Server).
 For building the client you would discard all changes in (Project/Server) and vice versa.
 
-# Settings (Scripts/Flow/FlowSettings)
+# Settings (Assets/Core/Flow/FlowSettings)
 Here you can set the global settings needed to run a dedicated server.
 
-# Actions (Scripts/FlowActions)
+# Actions (Assets/FlowActions)
 To create new actions you can use the asset menu (rightclick -> Flow -> Add FlowAction).
 Actions are automatically indexed by the script, so no need for registering them.
 

@@ -10,7 +10,7 @@ namespace Flow.Actions
   /// <summary>Package data definition for data sent by the Server.<summary>
   public class SpawnFlowServerPackage
   {
-    public int clientId { get; set; }
+    public string clientId { get; set; }
     public Vector3 position { get; set; }
     public Quaternion rotation { get; set; }
   }
@@ -53,7 +53,7 @@ namespace Flow.Actions
     }
 
     /// <summary>Sends the server package to the client(s).<summary>
-    public void Send(int _clientId, Vector3 _position, Quaternion _rotation)
+    public void Send(string _clientId, Vector3 _position, Quaternion _rotation)
     {
       GameObject prefab = Instantiate(References.defaults.SERVER_PLAYER_PREFAB, _position, _rotation);
       ServerPlayerManager.AddPlayerPrefab(prefab, _clientId);

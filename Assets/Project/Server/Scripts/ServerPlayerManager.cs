@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Flow;
-
 
 namespace Server
 {
@@ -11,14 +9,14 @@ namespace Server
     public int playerCount = 0;
     private int prevPlayerCount = 0;
 
-    public static Dictionary<int, GameObject> playerPrefabs = new Dictionary<int, GameObject>();
+    public static Dictionary<string, GameObject> playerPrefabs = new Dictionary<string, GameObject>();
 
-    public static void AddPlayerPrefab(GameObject _playerPrefab, int _clientId)
+    public static void AddPlayerPrefab(GameObject _playerPrefab, string _clientId)
     {
       playerPrefabs.Add(_clientId, _playerPrefab);
     }
 
-    public static void RemovePlayerPrefab(int _clientId)
+    public static void RemovePlayerPrefab(string _clientId)
     {
       if (playerPrefabs.TryGetValue(_clientId, out GameObject prefab)) Destroy(prefab);
       playerPrefabs.Remove(_clientId);

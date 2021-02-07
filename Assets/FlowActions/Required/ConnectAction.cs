@@ -6,14 +6,14 @@ namespace Flow.Actions
   /// <summary>Package data definition for data sent by the client.<summary>
   public class ConnectFlowClientPackage
   {
-    public int clientId { get; set; }
+    public string clientId { get; set; }
     public string messsage { get; set; }
   }
 
   /// <summary>Package data definition for data sent by the Server.<summary>
   public class ConnectFlowServerPackage
   {
-    public int clientId { get; set; }
+    public string clientId { get; set; }
     public string messsage { get; set; }
   }
 
@@ -36,7 +36,7 @@ namespace Flow.Actions
     }
 
     /// <summary>Sends the client package to the server.<summary>
-    public void Send(int _clientId, string _messsage)
+    public void Send(string _clientId, string _messsage)
     {
       SendPackage(new ConnectFlowClientPackage()
       {
@@ -68,7 +68,7 @@ namespace Flow.Actions
     }
 
     /// <summary>Sends the server package to the client(s).<summary>
-    public void Send(int _clientId, string _messsage)
+    public void Send(string _clientId, string _messsage)
     {
       SendPackage(new ConnectFlowServerPackage()
       {

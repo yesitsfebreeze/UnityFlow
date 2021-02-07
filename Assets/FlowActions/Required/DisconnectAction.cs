@@ -8,7 +8,7 @@ namespace Flow.Actions
   /// <summary>Package data definition for data sent by the client.<summary>
   public class DisconnectFlowServerPackage
   {
-    public int clientId { get; set; }
+    public string clientId { get; set; }
     public string message { get; set; }
   }
 
@@ -42,7 +42,7 @@ namespace Flow.Actions
   public class DisconnectFlowServerAction : FlowAction
   {
     /// <summary>Sends the server package to the client(s).<summary>
-    public void Send(int _clientId)
+    public void Send(string _clientId)
     {
       ServerPlayerManager.RemovePlayerPrefab(_clientId);
 
@@ -50,7 +50,7 @@ namespace Flow.Actions
       {
         clientId = _clientId,
         message = $"Client ({_clientId}) has disconnected.",
-      }).SendExcept(SendMethod.ReliableUnordered, new int[] { _clientId });
+      }).SendExcept(SendMethod.ReliableUnordered, new string[] { _clientId });
     }
   }
 }

@@ -9,7 +9,7 @@ namespace Flow
   public class FlowClient : MonoBehaviour, INetEventListener
   {
 
-    public static int id = -1;
+    public static string id = "";
     public static bool isConnected = false;
     public FlowSettings FlowSettings;
     public static FlowSettings settings;

@@ -16,7 +16,7 @@ namespace Flow
     public static FlowSettings settings;
     public delegate bool IterateClientCallback(FlowClientServer client);
     public delegate void CreateClientCallback(FlowClientServer client);
-    public static Dictionary<int, FlowClientServer> clients;
+    public static Dictionary<string, FlowClientServer> clients;
     private NetManager netManager;
     private FlowActions flowActions;
 
@@ -29,7 +29,7 @@ namespace Flow
       Flow.isClient = false;
       Flow.isServer = true;
 
-      clients = new Dictionary<int, FlowClientServer>();
+      clients = new Dictionary<string, FlowClientServer>();
       netManager = new NetManager(this) { AutoRecycle = true };
     }
 
@@ -152,26 +152,20 @@ namespace Flow
     /// <param name="peer"></param>
     void INetEventListener.OnPeerConnected(NetPeer peer)
     {
+      string peerID = Flow.CreateClientId(peer);
       Logger.Debug($"Incomming connection from {peer.EndPoint.Address}:{peer.EndPoint.Port}");
-      if (clients.ContainsKey(peer.Id) && clients.TryGetValue(peer.Id, out FlowClientServer existingClient))
+      if (clients.ContainsKey(peerID) && clients.TryGetValue(peerID, out FlowClientServer existingClient))
       {
-
-        if ($"{peer.EndPoint.Address}:{peer.EndPoint.Port}" == existingClient.endPoint)
-        {
-          existingClient.Connect(peer, true);
-        }
-        else
-        {
-          existingClient.Connect(peer, true);
-        }
-
+        existingClient.Connect(peer, true);
         return;
       }
+
       if (clients.Count >= settings.MAX_PLAYERS)
       {
         Logger.Log("Server is full");
         return;
       }
+
       FlowClientServer client = new FlowClientServer();
       client.Connect(peer);
     }
@@ -184,11 +178,12 @@ namespace Flow
     /// <param name="disconnectInfo"></param>
     void INetEventListener.OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {
+      string peerID = Flow.CreateClientId(peer);
       Logger.Debug($"Connection to {peer.EndPoint.Address}:{peer.EndPoint.Port} closed. ({disconnectInfo.Reason.ToString()})");
 
       IterateConnectedClients((FlowClientServer client) =>
       {
-        if (peer.Id == client.id) return client.Disconnect();
+        if (peerID == client.id) return client.Disconnect();
         return true;
       });
     }

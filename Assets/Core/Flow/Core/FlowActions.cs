@@ -77,6 +77,7 @@ namespace Flow.Actions
     /// <param name="call"></param>
     static public void RegisterOnStartedCallback(UnityAction call)
     {
+      if (OnStartedEvent == null) return;
       OnStartedEvent.AddListener(call);
       HasListeners = true;
     }
@@ -197,7 +198,10 @@ namespace Flow.Actions
     static public FlowAction GetActionByName(string actionName)
     {
       actionName = FlowActions.CleanName(actionName, true);
-      return actions[actionName];
+
+      if (actions.TryGetValue(actionName, out FlowAction realAction)) return realAction;
+
+      return null;
     }
 
     /// <summary>

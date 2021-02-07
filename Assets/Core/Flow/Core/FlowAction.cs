@@ -76,7 +76,7 @@ namespace Flow.Actions
       /// </summary>
       /// <param name="method"></param>
       /// <param name="clientId"></param>
-      public void Send(SendMethod method, int clientId = -999)
+      public void Send(SendMethod method, string clientId = "")
       {
         if (isClient)
         {
@@ -84,7 +84,7 @@ namespace Flow.Actions
         }
         else
         {
-          if (clientId == -999) throw new ArgumentException("The clients id must be passed.");
+          if (clientId == "") throw new ArgumentException("The clients id must be passed.");
           FlowServer.clients[clientId].peer.Send(writer, (DeliveryMethod)method);
         }
       }
@@ -111,7 +111,7 @@ namespace Flow.Actions
       /// </summary>
       /// <param name="method"></param>
       /// <param name="clientIds"></param>
-      public void SendExcept(SendMethod method, int[] clientIds)
+      public void SendExcept(SendMethod method, string[] clientIds)
       {
         if (isClient)
         {
@@ -119,7 +119,7 @@ namespace Flow.Actions
         }
         FlowServer.IterateConnectedClients((FlowClientServer client) =>
         {
-          if (!IntInArray(clientIds, client.id)) client.peer.Send(writer, (DeliveryMethod)method);
+          if (!StringInArray(clientIds, client.id)) client.peer.Send(writer, (DeliveryMethod)method);
           return true;
         });
       }
@@ -129,7 +129,7 @@ namespace Flow.Actions
       /// </summary>
       /// <param name="method"></param>
       /// <param name="clientIds"></param>
-      public void SendExclusively(SendMethod method, int[] clientIds)
+      public void SendExclusively(SendMethod method, string[] clientIds)
       {
         if (isClient)
         {
@@ -137,7 +137,7 @@ namespace Flow.Actions
         }
         FlowServer.IterateConnectedClients((FlowClientServer client) =>
         {
-          if (IntInArray(clientIds, client.id)) client.peer.Send(writer, (DeliveryMethod)method);
+          if (StringInArray(clientIds, client.id)) client.peer.Send(writer, (DeliveryMethod)method);
           return true;
         });
       }
@@ -148,10 +148,10 @@ namespace Flow.Actions
       /// <param name="list"></param>
       /// <param name="value"></param>
       /// <returns></returns>
-      private static bool IntInArray(Array list, int value)
+      private static bool StringInArray(Array list, string value)
       {
         bool contains = false;
-        foreach (int n in list)
+        foreach (string n in list)
         {
           if (n == value)
           {

@@ -2,55 +2,31 @@
 using Client;
 using Server;
 
-namespace Flow.Actions
-{
+namespace Flow.Actions {
 
-  /// <summary>Package data definition for data sent by the client.<summary>
-  public class DisconnectFlowServerPackage
-  {
-    public string clientId { get; set; }
+  public class DisconnectFlowServerPackage : FlowPackage {
     public string message { get; set; }
   }
 
-  /// <summary>Handles packages on the client.<summary>
-  public class DisconnectFlowClientAction : FlowAction
-  {
-
-    /// <summary>Subscribes server packages on the client.<summary>
-    public override void SubscribePackage()
-    {
-      processor.SubscribeReusable<DisconnectFlowServerPackage>(Handle);
-    }
-
-    /// <summary>Handles a server package on the client.<summary>
-    private void Handle(DisconnectFlowServerPackage package)
-    {
+  public class DisconnectFlowClientAction : FlowAction {
+    public void Handle(DisconnectFlowServerPackage package) {
       Logger.Log(package.message);
-      if (package.clientId == FlowClient.id)
-      {
+      if (package.clientId == FlowClient.id) {
         ClientPlayerManager.RemovePlayerPrefab();
-      }
-      else
-      {
+      } else {
         ClientPlayerManager.RemoveEnemyPrefab(package.clientId);
       }
     }
   }
 
+  public class DisconnectFlowServerAction : FlowAction {
+    public void SendFrom(string clientId) {
+      ServerPlayerManager.RemovePlayerPrefab(clientId);
 
-  /// <summary>Handles packages on the server.<summary>
-  public class DisconnectFlowServerAction : FlowAction
-  {
-    /// <summary>Sends the server package to the client(s).<summary>
-    public void Send(string _clientId)
-    {
-      ServerPlayerManager.RemovePlayerPrefab(_clientId);
-
-      SendPackage(new DisconnectFlowServerPackage()
-      {
-        clientId = _clientId,
-        message = $"Client ({_clientId}) has disconnected.",
-      }).SendExcept(SendMethod.ReliableUnordered, new string[] { _clientId });
+      SendPackage(new DisconnectFlowServerPackage() {
+        clientId = clientId,
+        message = $"Client ({clientId}) has disconnected.",
+      }).SendExcept(SendMethod.ReliableUnordered, new string[] { clientId });
     }
   }
 }

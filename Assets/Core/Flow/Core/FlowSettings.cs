@@ -2,8 +2,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "FlowSettings", menuName = "Flow/Settings", order = 1)]
 
-public class FlowSettings : ScriptableObject
-{
+public class FlowSettings : ScriptableObject {
 
   public bool DEVELOPMENT_MODE = true;
 

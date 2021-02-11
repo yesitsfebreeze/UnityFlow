@@ -2,18 +2,24 @@ using UnityEngine;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
+using System.Reflection;
 
-namespace Flow.Actions
-{
+namespace Flow.Actions {
+
+
+  public class FlowPackage {
+    public string clientId { get; set; }
+  }
+
 
   /// <summary>
   /// this is the base class for a Flow Action that gets executed either 
   /// on the server or the client
   /// </summary>
-  public class FlowAction : MonoBehaviour
-  {
+  public class FlowAction : MonoBehaviour {
     public int id;
     public bool isClient = false;
+    public Type package;
     public FlowSettings settings;
     public NetDataWriter writer;
     public NetPacketProcessor processor;
@@ -21,8 +27,7 @@ namespace Flow.Actions
     /// <summary>
     /// Different send methods available in the rudp protocoll
     /// </summary>
-    public enum SendMethod
-    {
+    public enum SendMethod {
       ReliableUnordered = DeliveryMethod.ReliableUnordered,
       ReliableOrdered = DeliveryMethod.ReliableOrdered,
       ReliableSequenced = DeliveryMethod.ReliableSequenced,
@@ -30,17 +35,49 @@ namespace Flow.Actions
       Unreliable = DeliveryMethod.Unreliable,
     }
 
+    public void SetPackageType<FlowPackage>() {
+      package = typeof(FlowPackage);
+    }
+
+    public void SubscribePackage() {
+      string className = this.GetType().Name;
+      string packageName;
+      if (className.Contains("ServerAction")) {
+        packageName = className.Replace("ServerAction", "ClientPackage");
+      } else {
+        packageName = className.Replace("ClientAction", "ServerPackage");
+      }
+
+      Type package = Type.GetType($"Flow.Actions.{packageName}");
+      if (package == null) return;
+
+
+
+      MethodInfo mi = GetType().GetMethod("SubscribeReusable");
+      if (mi == null) return;
+
+      Type[] types = new Type[1];
+      types[0] = package;
+
+      MethodInfo method = mi.MakeGenericMethod(types);
+      Action<object, NetPeer> action = HandlePackage;
+      method.Invoke(this, new object[] { action });
+    }
+
+    public void SubscribeReusable<T>(Action<object, NetPeer> onReceive) where T : class, new() {
+      processor.SubscribeReusable<T, NetPeer>(onReceive);
+    }
+
     /// <summary>
     /// used to subscribe to user defined packages
     /// </summary>
-    public virtual void SubscribePackage()
-    {
-      // how to use
-      ///
-      // public override void SubscribePackage()
-      // {
-      //   processor.SubscribeReusable<SomePackageClass>(PrivateClassMethod);
-      // }
+    public void HandlePackage(object package, NetPeer peer) {
+      MethodInfo mi = GetType().GetMethod("Handle");
+      if (mi == null) return;
+      FlowPackage flowPackage = (FlowPackage)package;
+      flowPackage.clientId = Flow.CreateClientId(peer);
+
+      mi.Invoke(this, new object[] { flowPackage });
     }
 
     /// <summary>
@@ -49,9 +86,12 @@ namespace Flow.Actions
     /// <typeparam name="T"></typeparam>
     /// <param name="package"></param>
     /// <returns></returns>
-    public ActionSender SendPackage<T>(T package) where T : class, new()
-    {
+    public ActionSender SendPackage<T>(T package) where T : class, new() {
       writer.Reset();
+      if (isClient) {
+        FlowPackage flowPackage = package as FlowPackage;
+        flowPackage.clientId = FlowClient.id;
+      }
       processor.Write(writer, package);
       return new ActionSender(writer, isClient);
     }
@@ -59,13 +99,11 @@ namespace Flow.Actions
     /// <summary>
     /// Helper class to send the action via the correct method and to the correct peer
     /// </summary>
-    public class ActionSender
-    {
+    public class ActionSender {
       private NetDataWriter writer;
       public static bool isClient = false;
 
-      public ActionSender(NetDataWriter _writer, bool _isClient)
-      {
+      public ActionSender(NetDataWriter _writer, bool _isClient) {
         isClient = _isClient;
         writer = _writer;
       }
@@ -76,14 +114,10 @@ namespace Flow.Actions
       /// </summary>
       /// <param name="method"></param>
       /// <param name="clientId"></param>
-      public void Send(SendMethod method, string clientId = "")
-      {
-        if (isClient)
-        {
+      public void Send(SendMethod method, string clientId = "") {
+        if (isClient) {
           FlowClient.peer.Send(writer, (DeliveryMethod)method);
-        }
-        else
-        {
+        } else {
           if (clientId == "") throw new ArgumentException("The clients id must be passed.");
           FlowServer.clients[clientId].peer.Send(writer, (DeliveryMethod)method);
         }
@@ -93,14 +127,11 @@ namespace Flow.Actions
       /// Sends the package to all connected peers
       /// </summary>
       /// <param name="method"></param>
-      public void SendAll(SendMethod method)
-      {
-        if (isClient)
-        {
+      public void SendAll(SendMethod method) {
+        if (isClient) {
           throw new NotSupportedException("SendAll is not supported on the client.");
         }
-        FlowServer.IterateConnectedClients((FlowClientServer client) =>
-        {
+        FlowServer.IterateConnectedClients((FlowClientServer client) => {
           client.peer.Send(writer, (DeliveryMethod)method);
           return true;
         });
@@ -111,14 +142,11 @@ namespace Flow.Actions
       /// </summary>
       /// <param name="method"></param>
       /// <param name="clientIds"></param>
-      public void SendExcept(SendMethod method, string[] clientIds)
-      {
-        if (isClient)
-        {
+      public void SendExcept(SendMethod method, string[] clientIds) {
+        if (isClient) {
           throw new NotSupportedException("SendAllExcept is not supported on the client.");
         }
-        FlowServer.IterateConnectedClients((FlowClientServer client) =>
-        {
+        FlowServer.IterateConnectedClients((FlowClientServer client) => {
           if (!StringInArray(clientIds, client.id)) client.peer.Send(writer, (DeliveryMethod)method);
           return true;
         });
@@ -129,14 +157,11 @@ namespace Flow.Actions
       /// </summary>
       /// <param name="method"></param>
       /// <param name="clientIds"></param>
-      public void SendExclusively(SendMethod method, string[] clientIds)
-      {
-        if (isClient)
-        {
+      public void SendExclusively(SendMethod method, string[] clientIds) {
+        if (isClient) {
           throw new NotSupportedException("SendMultiple is not supported on the client.");
         }
-        FlowServer.IterateConnectedClients((FlowClientServer client) =>
-        {
+        FlowServer.IterateConnectedClients((FlowClientServer client) => {
           if (StringInArray(clientIds, client.id)) client.peer.Send(writer, (DeliveryMethod)method);
           return true;
         });
@@ -148,13 +173,10 @@ namespace Flow.Actions
       /// <param name="list"></param>
       /// <param name="value"></param>
       /// <returns></returns>
-      private static bool StringInArray(Array list, string value)
-      {
+      private static bool StringInArray(Array list, string value) {
         bool contains = false;
-        foreach (string n in list)
-        {
-          if (n == value)
-          {
+        foreach (string n in list) {
+          if (n == value) {
             contains = true;
             break;
           }

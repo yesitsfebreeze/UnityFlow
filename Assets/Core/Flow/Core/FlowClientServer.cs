@@ -4,14 +4,12 @@ using System.Timers;
 using System;
 using System.Threading.Tasks;
 
-namespace Flow
-{
+namespace Flow {
 
   /// <summary>
   /// Server side client
   /// </summary>
-  public class FlowClientServer
-  {
+  public class FlowClientServer {
 
     public string id = "";
     public string endPoint = "";
@@ -25,8 +23,7 @@ namespace Flow
     /// Connect this client to the passed peer
     /// </summary>
     /// <param name="_peer"></param>
-    public FlowClientServer Connect(NetPeer _peer, bool wasConnected = false)
-    {
+    public FlowClientServer Connect(NetPeer _peer, bool wasConnected = false) {
       if (isConnected) return this;
       peer = _peer;
       endPoint = $"{peer.EndPoint.Address}:{peer.EndPoint.Port}";
@@ -34,17 +31,14 @@ namespace Flow
       isConnected = true;
       ConnectFlowServerAction action = FlowActions.GetActionByName("Connect") as ConnectFlowServerAction;
 
-      if (wasConnected)
-      {
+      if (wasConnected) {
         Logger.Debug($"Client ({id}) has reconnected");
-        if (action != null) action.Send(id, "You reconnected succesfully.");
-      }
-      else
-      {
+        if (action != null) action.SendFrom(id, "You reconnected succesfully.");
+      } else {
         if (FlowServer.clients.ContainsKey(id)) FlowServer.clients.Remove(id);
         Logger.Debug($"Client ({id}) has connected");
         FlowServer.clients.Add(id, this);
-        if (action != null) action.Send(id, "You connected succesfully.");
+        if (action != null) action.SendFrom(id, "You connected succesfully.");
       }
 
 
@@ -54,23 +48,21 @@ namespace Flow
     /// <summary>
     /// disconnect this client
     /// </summary>
-    public bool Disconnect()
-    {
+    public bool Disconnect() {
       if (!isConnected) return true;
       isConnected = false;
       AsyncDisconnect();
       return false;
     }
 
-    private async void AsyncDisconnect()
-    {
+    private async void AsyncDisconnect() {
       await Task.Delay((int)Math.Abs(DISCONNECT_DELAY * 1000));
 
       // peer.Disconnect();
       FlowServer.clients.Remove(id);
       Logger.Debug($"Client ({id}) has disconnected");
       DisconnectFlowServerAction action = FlowActions.GetActionByName("Disconnect") as DisconnectFlowServerAction;
-      action.Send(id);
+      action.SendFrom(id);
     }
   }
 }

@@ -2,15 +2,12 @@ using LiteNetLib;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace Flow
-{
-  static class Flow
-  {
+namespace Flow {
+  static class Flow {
     public static bool isServer = false;
     public static bool isClient = false;
 
-    public static string CreateClientId(NetPeer peer)
-    {
+    public static string CreateClientId(NetPeer peer) {
       string clientId = $"{ peer.EndPoint.Address}:{ peer.EndPoint.Port}";
       MD5 md5 = new MD5CryptoServiceProvider();
       byte[] value = Encoding.Default.GetBytes(clientId);

@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Flow.Actions;
 
-namespace Flow
-{
+namespace Flow {
 
   /// <summary>
   /// General server code for flow
   /// </summary>
-  class FlowServer : MonoBehaviour, INetEventListener
-  {
+  class FlowServer : MonoBehaviour, INetEventListener {
     public static bool isRunning = false;
     public FlowSettings FlowSettings;
     public static FlowSettings settings;
@@ -24,8 +22,7 @@ namespace Flow
     /// <summary>
     /// create 
     /// </summary>
-    void Awake()
-    {
+    void Awake() {
       Flow.isClient = false;
       Flow.isServer = true;
 
@@ -36,8 +33,7 @@ namespace Flow
     /// <summary>
     /// Sets up rudimentary stuff for the server
     /// </summary>
-    void Setup()
-    {
+    void Setup() {
       settings = FlowSettings;
       FlowActions.settings = FlowSettings;
       flowActions = gameObject.AddComponent<FlowActions>();
@@ -52,8 +48,7 @@ namespace Flow
     /// <summary>
     /// unity method to start the server as soon as this behaviour is created
     /// </summary>
-    void Start()
-    {
+    void Start() {
       Setup();
       FlowActions.RegisterOnStartedCallback(StartServer);
     }
@@ -61,10 +56,8 @@ namespace Flow
     /// <summary>
     /// unity method to start the server as soon as this behaviour is created
     /// </summary>
-    void OnDestroy()
-    {
-      if (netManager.IsRunning)
-      {
+    void OnDestroy() {
+      if (netManager.IsRunning) {
         netManager.Stop();
         Logger.Debug("Server stopped.");
       }
@@ -73,16 +66,12 @@ namespace Flow
     /// <summary>
     /// actual server start method
     /// </summary>
-    private void StartServer()
-    {
+    private void StartServer() {
       if (netManager.IsRunning) return;
-      if (netManager.Start(settings.PORT))
-      {
+      if (netManager.Start(settings.PORT)) {
         Logger.Debug($"Server started listening on port {settings.PORT}");
         isRunning = true;
-      }
-      else
-      {
+      } else {
         Logger.Debug("Server could not start!");
         return;
       }
@@ -92,8 +81,7 @@ namespace Flow
     /// <summary>
     /// Poll messages from the net manager
     /// </summary>
-    void FixedUpdate()
-    {
+    void FixedUpdate() {
       // TODO: check if fixed update has same time
       if (netManager.IsRunning) netManager.PollEvents();
     }
@@ -101,10 +89,8 @@ namespace Flow
     /// <summary>
     /// Iterates over all connected clients (return false for early loop exit)
     /// </summary>
-    public static void IterateConnectedClients(IterateClientCallback callback)
-    {
-      IterateClients((FlowClientServer client) =>
-      {
+    public static void IterateConnectedClients(IterateClientCallback callback) {
+      IterateClients((FlowClientServer client) => {
         bool proceed = true;
         if (client.isConnected) proceed = callback(client);
         return proceed;
@@ -114,14 +100,11 @@ namespace Flow
     /// <summary>
     /// Iterates over all clients (return false for early loop exit)
     /// </summary>
-    public static void IterateClients(IterateClientCallback callback)
-    {
+    public static void IterateClients(IterateClientCallback callback) {
       bool proceed = true;
-      foreach (var id in clients.Keys)
-      {
+      foreach (var id in clients.Keys) {
         if (!proceed) break;
-        if (clients.ContainsKey(id))
-        {
+        if (clients.ContainsKey(id)) {
           proceed = callback(clients[id]);
         }
       }
@@ -131,8 +114,7 @@ namespace Flow
     /// creates a client in the next free slot
     /// </summary>
     /// <param name="callback"></param>
-    public static void CreateClient(CreateClientCallback callback)
-    {
+    public static void CreateClient(CreateClientCallback callback) {
 
 
     }
@@ -141,8 +123,7 @@ namespace Flow
     /// Callback when connection is requested
     /// </summary>
     /// <param name="request"></param>
-    void INetEventListener.OnConnectionRequest(ConnectionRequest request)
-    {
+    void INetEventListener.OnConnectionRequest(ConnectionRequest request) {
       request.AcceptIfKey(settings.GAME_NAME);
     }
 
@@ -150,18 +131,15 @@ namespace Flow
     /// Callback when peer has connected
     /// </summary>
     /// <param name="peer"></param>
-    void INetEventListener.OnPeerConnected(NetPeer peer)
-    {
+    void INetEventListener.OnPeerConnected(NetPeer peer) {
       string peerID = Flow.CreateClientId(peer);
       Logger.Debug($"Incomming connection from {peer.EndPoint.Address}:{peer.EndPoint.Port}");
-      if (clients.ContainsKey(peerID) && clients.TryGetValue(peerID, out FlowClientServer existingClient))
-      {
+      if (clients.ContainsKey(peerID) && clients.TryGetValue(peerID, out FlowClientServer existingClient)) {
         existingClient.Connect(peer, true);
         return;
       }
 
-      if (clients.Count >= settings.MAX_PLAYERS)
-      {
+      if (clients.Count >= settings.MAX_PLAYERS) {
         Logger.Log("Server is full");
         return;
       }
@@ -176,13 +154,11 @@ namespace Flow
     /// </summary>
     /// <param name="peer"></param>
     /// <param name="disconnectInfo"></param>
-    void INetEventListener.OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
-    {
+    void INetEventListener.OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
       string peerID = Flow.CreateClientId(peer);
       Logger.Debug($"Connection to {peer.EndPoint.Address}:{peer.EndPoint.Port} closed. ({disconnectInfo.Reason.ToString()})");
 
-      IterateConnectedClients((FlowClientServer client) =>
-      {
+      IterateConnectedClients((FlowClientServer client) => {
         if (peerID == client.id) return client.Disconnect();
         return true;
       });
@@ -194,8 +170,7 @@ namespace Flow
     /// <param name="peer"></param>
     /// <param name="reader"></param>
     /// <param name="deliveryMethod"></param>
-    void INetEventListener.OnNetworkReceive(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
-    {
+    void INetEventListener.OnNetworkReceive(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod) {
       FlowActions.processor.ReadAllPackets(reader, peer);
     }
 

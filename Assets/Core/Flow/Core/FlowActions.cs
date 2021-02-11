@@ -6,14 +6,12 @@ using LiteNetLib.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Flow.Actions
-{
+namespace Flow.Actions {
 
   /// <summary>
   /// Used to setup all actions and their needed counterparts
   /// </summary>
-  public class FlowActions : MonoBehaviour
-  {
+  public class FlowActions : MonoBehaviour {
     public static List<string> AvailableActions;
     public static bool isClient = false;
     public static int ActionCount = 0;
@@ -30,27 +28,21 @@ namespace Flow.Actions
 
     private HashSet<string> actionNames = new HashSet<string>();
 
-    private void Awake()
-    {
-      if (instance == null)
-      {
+    private void Awake() {
+      if (instance == null) {
         OnStartedEvent = new UnityEvent();
         instance = this;
-      }
-      else if (instance != this)
-      {
+      } else if (instance != this) {
         Logger.Debug("Instance already exists, destroying object!");
         Destroy(this);
       }
     }
 
-    void FixedUpdate()
-    {
+    void FixedUpdate() {
       FireStartedCallbacks();
     }
 
-    void Start()
-    {
+    void Start() {
       writer = new NetDataWriter();
       processor = new NetPacketProcessor();
 
@@ -63,8 +55,7 @@ namespace Flow.Actions
     /// <summary>
     /// Fires the callback when listeners are present
     /// </summary>
-    private static void FireStartedCallbacks()
-    {
+    private static void FireStartedCallbacks() {
       if (!HasListeners) return;
       OnStartedEvent.Invoke();
       OnStartedEvent.RemoveAllListeners();
@@ -75,17 +66,14 @@ namespace Flow.Actions
     /// Callback that fires when all actions are registered.
     /// </summary>
     /// <param name="call"></param>
-    static public void RegisterOnStartedCallback(UnityAction call)
-    {
+    static public void RegisterOnStartedCallback(UnityAction call) {
       if (OnStartedEvent == null) return;
       OnStartedEvent.AddListener(call);
       HasListeners = true;
     }
 
-    void OnDestroy()
-    {
-      foreach (Component actionComponent in actionComponents.Values)
-      {
+    void OnDestroy() {
+      foreach (Component actionComponent in actionComponents.Values) {
         Destroy(actionComponent);
       }
 
@@ -95,18 +83,14 @@ namespace Flow.Actions
     /// <summary>
     /// Collects all actions in the current assembly
     /// </summary>
-    private void CollectActions()
-    {
+    private void CollectActions() {
       Assembly asm = Assembly.GetExecutingAssembly();
       Type[] types = asm.GetTypes();
-      foreach (var type in types)
-      {
-        if (type.Namespace == "Flow.Actions")
-        {
+      foreach (var type in types) {
+        if (type.Namespace == "Flow.Actions") {
           bool isServerAction = type.Name.EndsWith("FlowServerAction");
           bool isClientAction = type.Name.EndsWith("FlowClientAction");
-          if (isServerAction || isClientAction)
-          {
+          if (isServerAction || isClientAction) {
             actionNames.Add(CleanName(type.Name, true));
           }
 
@@ -117,23 +101,17 @@ namespace Flow.Actions
     /// <summary>
     /// Registers all connected actions
     /// </summary>
-    private void RegisterActions()
-    {
+    private void RegisterActions() {
 
-      foreach (string action in actionNames)
-      {
+      foreach (string action in actionNames) {
         string actionName = CleanName(action);
         string actionType = $"{ACTION_NAME_SPACE}.{actionName}";
 
         Type flowAction = Type.GetType(actionType);
 
-        if (flowAction == null)
-        {
+        if (flowAction == null) {
           throw new Exception($"Action of type {actionType} not found!");
-        }
-
-        else
-        {
+        } else {
           FlowAction actionComponent = gameObject.AddComponent(flowAction) as FlowAction;
           actionComponents.Add(actionName, actionComponent);
           RegisterAction(actionComponent);
@@ -145,8 +123,7 @@ namespace Flow.Actions
     /// Registers additional value types for the packages
     /// Types can be defined in "FlowPackageExtensions.cs" 
     ///    /// </summary>
-    private void RegisterProcessorExtensions()
-    {
+    private void RegisterProcessorExtensions() {
       processor.RegisterNestedType((w, v) => w.Put(v), reader => reader.GetVector2());
       processor.RegisterNestedType((w, v) => w.Put(v), reader => reader.GetVector3());
       processor.RegisterNestedType((w, v) => w.Put(v), reader => reader.GetQuaternion());
@@ -156,8 +133,7 @@ namespace Flow.Actions
     /// Registers a single action component
     /// </summary>
     /// <param name="action"></param>
-    private void RegisterAction(FlowAction action)
-    {
+    private void RegisterAction(FlowAction action) {
       string actionName = FlowActions.CleanName(action.GetType().Name, true);
       if (actions.TryGetValue(actionName, out FlowAction flowAction)) return;
 
@@ -180,8 +156,7 @@ namespace Flow.Actions
     /// <param name="name"></param>
     /// <param name="strip"></param>
     /// <returns></returns>
-    public static string CleanName(string name, bool strip = false)
-    {
+    public static string CleanName(string name, bool strip = false) {
 
       string stripped = Regex.Replace(name, @"FlowClientAction$", "");
       stripped = Regex.Replace(stripped, @"FlowServerAction$", "");
@@ -195,8 +170,7 @@ namespace Flow.Actions
     /// </summary>
     /// <param name="actionName"></param>
     /// <returns></returns>
-    static public FlowAction GetActionByName(string actionName)
-    {
+    static public FlowAction GetActionByName(string actionName) {
       actionName = FlowActions.CleanName(actionName, true);
 
       if (actions.TryGetValue(actionName, out FlowAction realAction)) return realAction;
@@ -209,8 +183,7 @@ namespace Flow.Actions
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    static public FlowAction GetActionById(int id)
-    {
+    static public FlowAction GetActionById(int id) {
       return actionsByID[id];
     }
   }

@@ -28,7 +28,7 @@ namespace Flow.Actions {
       ServerPlayerManager.AddPlayerPrefab(prefab, clientId);
 
       // spawn new client onn all existing clients
-      SendPackage(new SpawnFlowServerPackage() {
+      SendPackageFrom(clientId, new SpawnFlowServerPackage() {
         position = _position,
         rotation = _rotation
       }).SendAll(SendMethod.ReliableOrdered);
@@ -36,7 +36,7 @@ namespace Flow.Actions {
       // spawn already existing clients on the newly connected client
       FlowServer.IterateConnectedClients((FlowClientServer client) => {
         if (client.id != clientId) {
-          SendPackage(new SpawnFlowServerPackage() {
+          SendPackageFrom(client.id, new SpawnFlowServerPackage() {
             position = _position,
             rotation = _rotation
           }).Send(SendMethod.ReliableOrdered, clientId);

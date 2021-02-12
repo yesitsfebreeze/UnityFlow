@@ -74,10 +74,18 @@ namespace Flow.Actions {
     public void HandlePackage(object package, NetPeer peer) {
       MethodInfo mi = GetType().GetMethod("Handle");
       if (mi == null) return;
-      FlowPackage flowPackage = (FlowPackage)package;
-      flowPackage.clientId = Flow.CreateClientId(peer);
 
-      mi.Invoke(this, new object[] { flowPackage });
+      PropertyInfo[] fi = package.GetType().GetProperties();
+      foreach (PropertyInfo field in fi) {
+        if (field.Name == "clientId") {
+          if ((string)field.GetValue(package) == "") {
+            field.SetValue(package, Flow.CreateClientId(peer));
+          }
+
+        }
+      }
+
+      mi.Invoke(this, new object[] { package });
     }
 
     /// <summary>
@@ -88,12 +96,26 @@ namespace Flow.Actions {
     /// <returns></returns>
     public ActionSender SendPackage<T>(T package) where T : class, new() {
       writer.Reset();
-      if (isClient) {
-        FlowPackage flowPackage = package as FlowPackage;
-        flowPackage.clientId = FlowClient.id;
-      }
+
       processor.Write(writer, package);
       return new ActionSender(writer, isClient);
+    }
+
+    /// <summary>
+    /// Used to send a package over the client/server peer
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="package"></param>
+    /// <returns></returns>
+    public ActionSender SendPackageFrom<T>(string clientId, T package) where T : class, new() {
+      PropertyInfo[] fi = package.GetType().GetProperties();
+      foreach (PropertyInfo field in fi) {
+        if (field.Name == "clientId") {
+          field.SetValue(package, clientId);
+        }
+      }
+
+      return SendPackage(package);
     }
 
     /// <summary>

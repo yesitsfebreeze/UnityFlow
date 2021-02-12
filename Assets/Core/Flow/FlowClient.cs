@@ -8,6 +8,7 @@ namespace Flow {
   public class FlowClient : MonoBehaviour, INetEventListener {
 
     public static string id = "";
+    public string clientId = "";
     public static bool isConnected = false;
     public FlowSettings FlowSettings;
     public static FlowSettings settings;
@@ -135,6 +136,7 @@ namespace Flow {
     /// </summary>
     void Update() {
       if (netManager.IsRunning) netManager.PollEvents();
+      if (clientId == "" && id != "") clientId = id;
     }
 
     /// <summary>

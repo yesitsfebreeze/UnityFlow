@@ -8,7 +8,7 @@ namespace Flow {
     public static bool isClient = false;
 
     public static string CreateClientId(NetPeer peer) {
-      string clientId = $"{ peer.EndPoint.Address}:{ peer.EndPoint.Port}";
+      string clientId = $"{peer.EndPoint.Address}:{peer.EndPoint.Port}";
       MD5 md5 = new MD5CryptoServiceProvider();
       byte[] value = Encoding.Default.GetBytes(clientId);
       byte[] result = md5.ComputeHash(value);

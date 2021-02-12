@@ -23,8 +23,7 @@ namespace Flow.Actions {
     public void SendFrom(string clientId) {
       ServerPlayerManager.RemovePlayerPrefab(clientId);
 
-      SendPackage(new DisconnectFlowServerPackage() {
-        clientId = clientId,
+      SendPackageFrom(clientId, new DisconnectFlowServerPackage() {
         message = $"Client ({clientId}) has disconnected.",
       }).SendExcept(SendMethod.ReliableUnordered, new string[] { clientId });
     }
